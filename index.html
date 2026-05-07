@@ -8,7 +8,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,sans-serif;overflow:hidden;color:#fff}
 
-/* TELA DE LOGIN */
 .login-screen{
   position:fixed;top:0;left:0;width:100%;height:100%;
   background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);
@@ -105,20 +104,23 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
 
 .formation.titulo{position:absolute;top:-35px;left:50%;transform:translateX(-50%);font-size:15px;color:#00ff88;font-weight:900;background:rgba(0,0,0,.9);padding:5px 15px;border-radius:8px;border:2px solid #00ff88}
 
+/* PLAYER NOVO - CIRCULO COM FOTO */
 .player{
-  position:absolute;width:78px;height:98px;text-align:center;font-size:9px;
-  transform:translate(-50%,-50%);background:rgba(0,0,0,.92);
-  border:2px solid #00ff88;border-radius:8px;padding:5px;
-  box-shadow:0 3px 12px rgba(0,0,0,.9);transition:all.2s;z-index:10
+  position:absolute;width:65px;height:80px;text-align:center;
+  transform:translate(-50%,-50%);z-index:10;transition:all.2s
 }
-.player:hover{transform:translate(-50%,-50%) scale(1.15);z-index:100;border-color:#ffcc00}
-.player img{width:58px;height:58px;border-radius:6px;object-fit:cover;background:#222;margin:0 auto 4px;display:block;border:1px solid #444}
-.player.nome{font-weight:800;color:#fff;text-shadow:0 2px 4px #000;line-height:1.1;font-size:9px}
-.player.num{
-  position:absolute;top:-10px;right:-10px;background:#00ff88;color:#000;
-  font-weight:900;border-radius:50%;width:24px;height:24px;
-  display:flex;align-items:center;justify-content:center;font-size:11px;
-  border:3px solid #000;box-shadow:0 2px 6px rgba(0,0,0,.8)
+.player:hover{transform:translate(-50%,-50%) scale(1.2);z-index:100}
+.player.foto{
+  width:50px;height:50px;border-radius:50%;object-fit:cover;
+  background:#222;margin:0 auto;border:3px solid #00ff88;
+  box-shadow:0 3px 12px rgba(0,0,0,.9)
+}
+.player:hover.foto{border-color:#ffcc00}
+.player.nome{
+  font-weight:700;color:#fff;text-shadow:0 2px 4px #000;
+  line-height:1.1;font-size:10px;margin-top:3px;
+  background:rgba(0,0,0,.8);padding:2px 4px;border-radius:4px;
+  max-width:65px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 
 .left.gk{bottom:6%;left:50%}
@@ -160,7 +162,6 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
 </head>
 <body>
 
-<!-- TELA DE LOGIN FIREBASE -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <h2>⚽ DASHBOARD PRO</h2>
@@ -172,7 +173,6 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
   </div>
 </div>
 
-<!-- DASHBOARD PRINCIPAL -->
 <div id="dashboard" class="hidden">
 <div class="user-info" id="userInfo">Carregando...</div>
 <button class="logout-btn" id="logoutBtn">🚪 Sair</button>
@@ -181,12 +181,12 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
 <div class="control-panel" id="panel">
   <button class="close-x" id="closeBtn">X</button>
   <h3>⚽ Dashboard Campo Oficial</h3>
-  
+
   <div class="api-info">
     <strong>Limite:</strong> 60s entre updates = ~90 req/jogo<br>
     <strong>Firebase:</strong> <span id="firebaseUser">-</span>
   </div>
-  
+
   <div style="position:relative">
     <input type="password" id="apiKey" placeholder="Cole sua API Key da API-Football" style="padding-right:40px">
     <button id="toggleKey" style="position:absolute;right:5px;top:5px;width:30px;height:30px;background:#333;border:none;border-radius:4px;color:#fff;cursor:pointer;font-size:14px">👁️</button>
@@ -201,7 +201,7 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
     <option value="39">Premier League</option>
   </select>
   <button id="btnListarJogos">📋 Listar Jogos ao Vivo</button>
-  
+
   <div class="lista-jogos" id="listaJogos">Cole a API Key primeiro</div>
 
   <h4>Controle Manual</h4>
@@ -262,7 +262,6 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
 </div>
 
 <script type="module">
-// FIREBASE SETUP - PROJETO dashboard-futebol
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
@@ -278,7 +277,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// LOGIN FIREBASE
 document.getElementById('btnLogin').onclick=fazerLogin;
 document.getElementById('logoutBtn').onclick=fazerLogout;
 document.getElementById('loginPass').addEventListener('keypress',e=>{if(e.key==='Enter')fazerLogin()});
@@ -288,17 +286,17 @@ async function fazerLogin(){
   const pass=document.getElementById('loginPass').value;
   const btn=document.getElementById('btnLogin');
   const err=document.getElementById('loginError');
-  
+
   if(!email||!pass){
     err.innerText='Preencha email e senha';
     err.style.display='block';
     return;
   }
-  
+
   btn.disabled=true;
   btn.innerText='ENTRANDO...';
   err.style.display='none';
-  
+
   try{
     await signInWithEmailAndPassword(auth,email,pass);
     log('Firebase: Login realizado');
@@ -315,7 +313,6 @@ async function fazerLogout(){
   log('Firebase: Logout realizado');
 }
 
-// VERIFICA SE ESTÁ LOGADO
 onAuthStateChanged(auth,(user)=>{
   if(user){
     document.getElementById('loginScreen').classList.add('hidden');
@@ -331,7 +328,6 @@ onAuthStateChanged(auth,(user)=>{
   }
 });
 
-// DASHBOARD
 let timerSec=0,timerInt=null,jogoAtual=null,updateInt=null,eventos=[],apiKey='',reqCount=0;
 const MAX_REQ=100,UPDATE_INTERVAL=60000;
 const posicoes=['gk','lat1','zag1','zag2','lat2','vol1','vol2','mei1','mei2','mei3','ata'];
@@ -346,7 +342,6 @@ document.getElementById('btnTimer').onclick=iniciarTimer;
 document.getElementById('btnPause').onclick=pausarTimer;
 document.getElementById('btnReset').onclick=resetarTudo;
 
-// TOGGLE API KEY VISIBILIDADE
 document.getElementById('toggleKey').onclick=()=>{
   const inp=document.getElementById('apiKey');
   const btn=document.getElementById('toggleKey');
@@ -396,7 +391,7 @@ async function listarJogos(){
   if(!apiKey){alert('Cole sua API Key primeiro');return}
   const liga=document.getElementById('ligaSelect').value;
   log(`Buscando jogos...`);
-  
+
   try{
     const data=await apiRequest(`https://v3.football.api-sports.io/fixtures?live=all&league=${liga}`);
     if(!data.response||data.response.length===0){
@@ -411,7 +406,7 @@ async function listarJogos(){
         <small>${j.fixture.status.elapsed||0}' - ${j.fixture.status.long}</small>
       </div>
     `).join('');
-    
+
     document.getElementById('listaJogos').innerHTML=html;
     log(`${data.response.length} jogos ao vivo`);
   }catch(e){
@@ -434,7 +429,7 @@ async function atualizarJogo(){
   try{
     const data=await apiRequest(`https://v3.football.api-sports.io/fixtures?id=${jogoAtual}`);
     const j=data.response[0];
-    
+
     document.getElementById('teamA').innerText=j.teams.home.name;
     document.getElementById('teamB').innerText=j.teams.away.name;
     document.getElementById('scoreA').innerText=j.goals.home||0;
@@ -442,7 +437,7 @@ async function atualizarJogo(){
     document.getElementById('logoA').src=j.teams.home.logo;
     document.getElementById('logoB').src=j.teams.away.logo;
     document.getElementById('status').innerText=`${j.fixture.status.elapsed||0}' - ${j.fixture.status.long}`;
-    
+
     if(j.fixture.status.elapsed&&!timerInt){
       timerSec=j.fixture.status.elapsed*60;
       iniciarTimer();
@@ -472,31 +467,35 @@ async function buscarEscalacao(){
       montarEscalacao('A',data.response[0]);
       montarEscalacao('B',data.response[1]);
       log('Escalação com fotos carregada');
+    }else{
+      log('Escalação não disponível ainda');
     }
   }catch(e){
     log('Erro escalação: '+e.message);
   }
 }
 
+// FUNÇÃO NOVA - SÓ CIRCULO COM FOTO + NOME
 function montarEscalacao(time,data){
   const form=document.getElementById('form'+time);
   const campo=form.querySelector('.campo').outerHTML;
   form.innerHTML=campo+`<div class="titulo">${document.getElementById('team'+time).innerText}</div>`;
   const titulares=data.startXI.slice(0,11);
-  const reservas=data.substitutes;
 
   titulares.forEach((p,i)=>{
     const div=document.createElement('div');
     div.className=`player ${posicoes[i]||'ata'}`;
+    const nome=p.player.name.split(' ').slice(-1)[0];
+    const foto=p.player.photo||'';
     div.innerHTML=`
-      <img src="${p.player.photo||''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2258%22 height=%2258%22%3E%3Crect width=%2258%22 height=%2258%22 fill=%22%23111%22/%3E%3Ctext x=%2229%22 y=%2238%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2224%22%3E?%3C/text%3E%3C/svg%3E'">
-      <div class="num">${p.player.number||''}</div>
-      <div class="nome">${p.player.name.split(' ').slice(-1)[0]}</div>
+      <img class="foto" src="${foto}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2250%22 height=%2250%22%3E%3Ccircle cx=%2225%22 cy=%2225%22 r=%2225%22 fill=%22%23111%22/%3E%3Ctext x=%2225%22 y=%2232%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2220%22%3E?%3C/text%3E%3C/svg%3E'">
+      <div class="nome">${nome}</div>
     `;
     form.appendChild(div);
   });
 
-  document.getElementById('subs'+time).innerHTML=reservas.slice(0,7).map(p=>`${p.player.number} ${p.player.name.split(' ').slice(-1)[0]}`).join(' • ');
+  const reservas=data.substitutes;
+  document.getElementById('subs'+time).innerHTML=reservas.slice(0,7).map(p=>`${p.player.number||''} ${p.player.name.split(' ').slice(-1)[0]}`).join(' • ');
 }
 
 function addEvento(tipo,time,minuto,jogador){
