@@ -122,21 +122,20 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
   max-width:65px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 
-/* FORMAÇÃO 4-2-3-1 TIME ESQUERDA - ATACA PRA CIMA */
-.left.gk{bottom:6%;left:50%}
-.left.zag1{bottom:28%;left:32%}.left.zag2{bottom:28%;left:68%}
-.left.lat1{bottom:35%;left:6%}.left.lat2{bottom:35%;left:94%}
-.left.vol1{bottom:48%;left:35%}.left.vol2{bottom:48%;left:65%}
-.left.mei1{bottom:68%;left:18%}.left.mei2{bottom:73%;left:50%}.left.mei3{bottom:68%;left:82%}
-.left.ata{bottom:88%;left:50%}
+/* FORMAÇÃO 4-2-3-1 - SELETORES CORRIGIDOS */
+.formation.left.gk{bottom:6%;left:50%}
+.formation.left.zag1{bottom:28%;left:32%}.formation.left.zag2{bottom:28%;left:68%}
+.formation.left.lat1{bottom:35%;left:6%}.formation.left.lat2{bottom:35%;left:94%}
+.formation.left.vol1{bottom:48%;left:35%}.formation.left.vol2{bottom:48%;left:65%}
+.formation.left.mei1{bottom:68%;left:18%}.formation.left.mei2{bottom:73%;left:50%}.formation.left.mei3{bottom:68%;left:82%}
+.formation.left.ata{bottom:88%;left:50%}
 
-/* FORMAÇÃO 4-2-3-1 TIME DIREITA - ATACA PRA BAIXO */
-.right.gk{top:6%;left:50%}
-.right.zag1{top:28%;left:32%}.right.zag2{top:28%;left:68%}
-.right.lat1{top:35%;left:6%}.right.lat2{top:35%;left:94%}
-.right.vol1{top:48%;left:35%}.right.vol2{top:48%;left:65%}
-.right.mei1{top:68%;left:18%}.right.mei2{top:73%;left:50%}.right.mei3{top:68%;left:82%}
-.right.ata{top:88%;left:50%}
+.formation.right.gk{top:6%;left:50%}
+.formation.right.zag1{top:28%;left:32%}.formation.right.zag2{top:28%;left:68%}
+.formation.right.lat1{top:35%;left:6%}.formation.right.lat2{top:35%;left:94%}
+.formation.right.vol1{top:48%;left:35%}.formation.right.vol2{top:48%;left:65%}
+.formation.right.mei1{top:68%;left:18%}.formation.right.mei2{top:73%;left:50%}.formation.right.mei3{top:68%;left:82%}
+.formation.right.ata{top:88%;left:50%}
 
 .subs{position:absolute;bottom:35px;background:rgba(0,0,0,.92);padding:10px 18px;border-radius:8px;font-size:11px;max-width:500px;line-height:1.5;border:2px solid #222;z-index:10}
 .subs.left{left:25px}.subs.right{right:25px}
@@ -331,7 +330,6 @@ onAuthStateChanged(auth,(user)=>{
 
 let timerSec=0,timerInt=null,jogoAtual=null,updateInt=null,eventos=[],apiKey='',reqCount=0;
 const MAX_REQ=100,UPDATE_INTERVAL=60000;
-// FORMAÇÃO 4-2-3-1: gk, lat1, zag1, zag2, lat2, vol1, vol2, mei1, mei2, mei3, ata
 const posicoes=['gk','lat1','zag1','zag2','lat2','vol1','vol2','mei1','mei2','mei3','ata'];
 
 document.getElementById('toggleBtn').onclick=togglePanel;
@@ -465,12 +463,15 @@ async function buscarEscalacao(){
   if(!jogoAtual||reqCount>=MAX_REQ)return;
   try{
     const data=await apiRequest(`https://v3.football.api-sports.io/fixtures/lineups?fixture=${jogoAtual}`);
+    log(`API retornou ${data.response.length} escalações`);
     if(data.response.length===2){
+      log(`Time A: ${data.response[0].team.name} - ${data.response[0].startXI.length} jogadores`);
+      log(`Time B: ${data.response[1].team.name} - ${data.response[1].startXI.length} jogadores`);
       montarEscalacao('A',data.response[0]);
       montarEscalacao('B',data.response[1]);
       log('Escalação 4-2-3-1 carregada');
     }else{
-      log('Escalação não disponível ainda');
+      log('Escalação não disponível - API retornou vazio');
     }
   }catch(e){
     log('Erro escalação: '+e.message);
