@@ -122,20 +122,20 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
   max-width:65px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
 }
 
-/* FORMAÇÃO 4-2-3-1 - SELETORES CORRIGIDOS */
-.formation.left .gk{bottom:6%;left:50%}
-.formation.left .zag1{bottom:28%;left:32%}.formation.left .zag2{bottom:28%;left:68%}
-.formation.left .lat1{bottom:35%;left:6%}.formation.left .lat2{bottom:35%;left:94%}
-.formation.left .vol1{bottom:48%;left:35%}.formation.left .vol2{bottom:48%;left:65%}
-.formation.left .mei1{bottom:68%;left:18%}.formation.left .mei2{bottom:73%;left:50%}.formation.left .mei3{bottom:68%;left:82%}
-.formation.left .ata{bottom:88%;left:50%}
+/* FORMAÇÃO 4-2-3-1 - SELETORES CORRIGIDOS COM ESPAÇO */
+.formation.left.gk{bottom:6%;left:50%}
+.formation.left.zag1{bottom:28%;left:32%}.formation.left.zag2{bottom:28%;left:68%}
+.formation.left.lat1{bottom:35%;left:6%}.formation.left.lat2{bottom:35%;left:94%}
+.formation.left.vol1{bottom:48%;left:35%}.formation.left.vol2{bottom:48%;left:65%}
+.formation.left.mei1{bottom:68%;left:18%}.formation.left.mei2{bottom:73%;left:50%}.formation.left.mei3{bottom:68%;left:82%}
+.formation.left.ata{bottom:88%;left:50%}
 
-.formation.right .gk{top:6%;left:50%}
-.formation.right .zag1{top:28%;left:32%}.formation.right .zag2{top:28%;left:68%}
-.formation.right .lat1{top:35%;left:6%}.formation.right .lat2{top:35%;left:94%}
-.formation.right .vol1{top:48%;left:35%}.formation.right .vol2{top:48%;left:65%}
-.formation.right .mei1{top:68%;left:18%}.formation.right .mei2{top:73%;left:50%}.formation.right .mei3{top:68%;left:82%}
-.formation.right .ata{top:88%;left:50%}
+.formation.right.gk{top:6%;left:50%}
+.formation.right.zag1{top:28%;left:32%}.formation.right.zag2{top:28%;left:68%}
+.formation.right.lat1{top:35%;left:6%}.formation.right.lat2{top:35%;left:94%}
+.formation.right.vol1{top:48%;left:35%}.formation.right.vol2{top:48%;left:65%}
+.formation.right.mei1{top:68%;left:18%}.formation.right.mei2{top:73%;left:50%}.formation.right.mei3{top:68%;left:82%}
+.formation.right.ata{top:88%;left:50%}
 
 .subs{position:absolute;bottom:35px;background:rgba(0,0,0,.92);padding:10px 18px;border-radius:8px;font-size:11px;max-width:500px;line-height:1.5;border:2px solid #222;z-index:10}
 .subs.left{left:25px}.subs.right{right:25px}
@@ -158,6 +158,7 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
 .lista-jogos{max-height:200px;overflow-y:auto;background:#000;border:1px solid #333;border-radius:4px;padding:5px;margin:5px 0}
 .jogo-item{padding:6px;margin:2px 0;background:#0d0d0d;border:1px solid #222;border-radius:4px;cursor:pointer;font-size:12px}
 .jogo-item:hover{background:#00ff88;color:#000}
+.jogo-item.live{border-left:3px solid #00ff88}
 </style>
 </head>
 <body>
@@ -193,14 +194,26 @@ body{width:1920px;height:1080px;background:#0a0a0a;font-family:'Inter',Arial,san
   </div>
   <button id="btnSalvarKey">💾 Salvar Chave</button>
 
-  <h4>Buscar Jogos ao Vivo</h4>
+  <h4>Buscar Jogos de Hoje</h4>
   <select id="ligaSelect">
-    <option value="13">Libertadores</option>
-    <option value="71">Brasileirão</option>
-    <option value="2">Champions League</option>
-    <option value="39">Premier League</option>
+    <option value="all">Todas as Ligas</option>
+    <option value="13">🏆 Libertadores</option>
+    <option value="11">🏆 Sul-Americana</option>
+    <option value="71">🇧🇷 Brasileirão Série A</option>
+    <option value="72">🇧🇷 Brasileirão Série B</option>
+    <option value="2">🇪🇺 Champions League</option>
+    <option value="3">🇪🇺 Europa League</option>
+    <option value="39">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+    <option value="140">🇪🇸 La Liga</option>
+    <option value="135">🇮🇹 Serie A</option>
+    <option value="78">🇩🇪 Bundesliga</option>
+    <option value="61">🇫🇷 Ligue 1</option>
+    <option value="94">🇵🇹 Primeira Liga</option>
+    <option value="128">🇦🇷 Liga Argentina</option>
+    <option value="262">🇲🇽 Liga MX</option>
+    <option value="239">🇨🇴 Liga Colombiana</option>
   </select>
-  <button id="btnListarJogos">📋 Listar Jogos ao Vivo</button>
+  <button id="btnListarJogos">📋 Listar Jogos de Hoje</button>
 
   <div class="lista-jogos" id="listaJogos">Cole a API Key primeiro</div>
 
@@ -390,25 +403,46 @@ async function apiRequest(url){
 async function listarJogos(){
   if(!apiKey){alert('Cole sua API Key primeiro');return}
   const liga=document.getElementById('ligaSelect').value;
-  log(`Buscando jogos...`);
+  const hoje=new Date().toISOString().split('T')[0];
+  log(`Buscando jogos de ${hoje}...`);
 
   try{
-    const data=await apiRequest(`https://v3.football.api-sports.io/fixtures?live=all&league=${liga}`);
+    let url;
+    if(liga==='all'){
+      url=`https://v3.football.api-sports.io/fixtures?date=${hoje}`;
+    }else{
+      url=`https://v3.football.api-sports.io/fixtures?league=${liga}&season=2024&date=${hoje}`;
+    }
+
+    const data=await apiRequest(url);
+
     if(!data.response||data.response.length===0){
-      document.getElementById('listaJogos').innerHTML='Nenhum jogo ao vivo agora';
-      log('Nenhum jogo ao vivo');
+      document.getElementById('listaJogos').innerHTML='Nenhum jogo hoje nesta liga';
+      log('Nenhum jogo encontrado');
       return;
     }
 
-    const html=data.response.map(j=>`
-      <div class="jogo-item" onclick="selecionarJogo(${j.fixture.id})">
-        ${j.teams.home.name} ${j.goals.home||0} x ${j.goals.away||0} ${j.teams.away.name}<br>
-        <small>${j.fixture.status.elapsed||0}' - ${j.fixture.status.long}</small>
+    // Ordena: ao vivo primeiro
+    const jogos = data.response.sort((a,b)=>{
+      const aLive = ['1H','2H','HT','LIVE'].includes(a.fixture.status.short)? 0 : 1;
+      const bLive = ['1H','2H','HT','LIVE'].includes(b.fixture.status.short)? 0 : 1;
+      return aLive - bLive;
+    });
+
+    const html=jogos.map(j=>{
+      const isLive = ['1H','2H','HT','LIVE'].includes(j.fixture.status.short);
+      const liveClass = isLive? 'live' : '';
+      const status = isLive? `${j.fixture.status.elapsed||0}' LIVE` : new Date(j.fixture.date).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+      return `
+      <div class="jogo-item ${liveClass}" onclick="selecionarJogo(${j.fixture.id})">
+        ${j.teams.home.name} ${j.goals.home??0} x ${j.goals.away??0} ${j.teams.away.name}<br>
+        <small>${status} - ${j.league.name}</small>
       </div>
-    `).join('');
+    `}).join('');
 
     document.getElementById('listaJogos').innerHTML=html;
-    log(`${data.response.length} jogos ao vivo`);
+    log(`${jogos.length} jogos encontrados (${jogos.filter(j=>['1H','2H','HT'].includes(j.fixture.status.short)).length} ao vivo)`);
   }catch(e){
     log('Erro: '+e.message);
     alert('Erro na API. Verifica sua chave.');
@@ -432,8 +466,8 @@ async function atualizarJogo(){
 
     document.getElementById('teamA').innerText=j.teams.home.name;
     document.getElementById('teamB').innerText=j.teams.away.name;
-    document.getElementById('scoreA').innerText=j.goals.home||0;
-    document.getElementById('scoreB').innerText=j.goals.away||0;
+    document.getElementById('scoreA').innerText=j.goals.home??0;
+    document.getElementById('scoreB').innerText=j.goals.away??0;
     document.getElementById('logoA').src=j.teams.home.logo;
     document.getElementById('logoB').src=j.teams.away.logo;
     document.getElementById('status').innerText=`${j.fixture.status.elapsed||0}' - ${j.fixture.status.long}`;
