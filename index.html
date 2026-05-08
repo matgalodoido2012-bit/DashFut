@@ -1,111 +1,355 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><title>Dashboard Final Corrigido</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{width:1920px;height:1080px;background:#0a0a0a;font-family:Inter;color:#fff;overflow:hidden}.login-screen{position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:20000}.login-box{background:#1a1a1a;border:2px solid #0f8;padding:40px;width:380px;text-align:center;border-radius:12px}.login-box input{width:100%;padding:12px;margin:8px 0;background:#0d0d0d;border:1px solid #333;color:#fff;border-radius:6px}.login-box button{width:100%;padding:12px;background:#0f8;color:#000;border:none;border-radius:6px;font-weight:900;cursor:pointer}.hidden{display:none!important}.scoreboard{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;padding:12px 40px;display:flex;gap:30px;border-radius:12px}.team{display:flex;align-items:center;gap:10px;font-size:20px}.team img{width:32px;height:32px;border-radius:50%}.score{font-size:48px;color:#0f8;min-width:120px;text-align:center}.team-list{position:absolute;top:160px;width:520px}.team-list.left{left:30px}.team-list.right{right:30px}.team-header{background:#0f8;color:#000;padding:10px;border-radius:8px 8px 0 0;font-weight:900;display:flex;gap:10px;align-items:center}.team-header img{width:24px;height:24px;border-radius:50%}.players-container{background:#000;border:1px solid #333;padding:10px;max-height:710px;overflow-y:auto}.player-row{display:flex;align-items:center;gap:12px;padding:10px;margin:5px 0;background:#111;border-left:4px solid #333;border-radius:6px}.player-row.titular{border-left-color:#0f8}.player-row.sub-in{border-left-color:#fc0;background:#1a1500}.player-row.sub-out{opacity:.35}.player-num{width:32px;height:32px;background:#222;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900}.player-info{flex:1}.player-name{font-size:15px}.player-pos{font-size:11px;color:#888}.player-icons{display:flex;gap:4px}.icon-badge{padding:2px 6px;background:#222;border-radius:4px;font-size:12px}.icon-gol{background:#0f8;color:#000}.toggle-btn{position:fixed;top:10px;right:10px;background:#0f8;color:#000;border:none;padding:10px;border-radius:6px;cursor:pointer;z-index:10000}.control-panel{position:fixed;top:60px;right:10px;width:380px;background:#1a1a1a;border:1px solid #333;padding:15px;border-radius:8px;display:none;z-index:9999;max-height:90vh;overflow-y:auto}.control-panel.active{display:block}.control-panel input,.control-panel button,.control-panel select{width:100%;padding:8px;margin:5px 0;background:#0d0d0d;border:1px solid #333;color:#fff;border-radius:4px}.control-panel button{background:#0f8;color:#000;font-weight:700;cursor:pointer}.lista-jogos{max-height:200px;overflow-y:auto;background:#000;border:1px solid #333;padding:5px}.jogo-item{padding:8px;margin:3px 0;background:#111;border-radius:4px;cursor:pointer;font-size:12px;border-left:3px solid transparent}.jogo-item.live{border-left-color:#0f8;background:#002a14}.log{font-size:11px;color:#888;background:#000;padding:5px;max-height:100px;overflow-y:auto;margin-top:10px}.data-info{background:#030;color:#0f8;padding:6px;text-align:center;border-radius:4px;font-size:11px;margin-bottom:8px}</style>
+    <meta charset="UTF-8">
+    <title>Dashboard Futebol Pro - Final</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { width: 1920px; height: 1080px; background: #0a0a0a; font-family: 'Inter', sans-serif; color: #fff; overflow: hidden; }
+        
+        /* Login */
+        .login-screen { position: fixed; inset: 0; background: #0a0a0a; display: flex; align-items: center; justify-content: center; z-index: 20000; }
+        .login-box { background: #1a1a1a; border: 2px solid #0f8; padding: 40px; width: 380px; text-align: center; border-radius: 12px; }
+        .login-box input { width: 100%; padding: 12px; margin: 8px 0; background: #0d0d0d; border: 1px solid #333; color: #fff; border-radius: 6px; }
+        .login-box button { width: 100%; padding: 12px; background: #0f8; color: #000; border: none; border-radius: 6px; font-weight: 900; cursor: pointer; }
+        
+        .hidden { display: none !important; }
+
+        /* Placar Principal */
+        .scoreboard { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: #1a1a1a; padding: 12px 40px; display: flex; gap: 30px; border-radius: 12px; border: 1px solid #333; }
+        .team { display: flex; align-items: center; gap: 15px; font-size: 24px; font-weight: 700; }
+        .team img { width: 45px; height: 45px; object-fit: contain; }
+        .score { font-size: 56px; color: #0f8; min-width: 140px; text-align: center; font-family: monospace; }
+
+        /* Listas de Jogadores */
+        .team-list { position: absolute; top: 160px; width: 520px; }
+        .team-list.left { left: 30px; }
+        .team-list.right { right: 30px; }
+        .team-header { background: #0f8; color: #000; padding: 12px; border-radius: 8px 8px 0 0; font-weight: 900; display: flex; gap: 10px; align-items: center; text-transform: uppercase; }
+        .team-header img { width: 28px; height: 28px; }
+        
+        .players-container { background: rgba(0,0,0,0.8); border: 1px solid #333; padding: 10px; max-height: 750px; overflow-y: auto; }
+        .player-row { display: flex; align-items: center; gap: 12px; padding: 10px; margin: 5px 0; background: #111; border-left: 4px solid #333; border-radius: 6px; transition: 0.3s; }
+        .player-row.titular { border-left-color: #0f8; }
+        
+        .player-num { width: 32px; height: 32px; background: #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #0f8; }
+        .player-info { flex: 1; }
+        .player-name { font-size: 16px; font-weight: 600; }
+        .player-icons { display: flex; gap: 6px; }
+        .icon-badge { padding: 2px 6px; background: #222; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .icon-gol { background: #0f8; color: #000; }
+
+        /* Painel de Controle */
+        .toggle-btn { position: fixed; top: 15px; right: 15px; background: #0f8; color: #000; border: none; padding: 12px; border-radius: 50%; cursor: pointer; z-index: 10000; font-size: 20px; box-shadow: 0 0 15px rgba(0,255,136,0.3); }
+        .control-panel { position: fixed; top: 75px; right: 15px; width: 380px; background: #1a1a1a; border: 1px solid #333; padding: 20px; border-radius: 12px; display: none; z-index: 9999; }
+        .control-panel.active { display: block; }
+        .control-panel input, .control-panel button, .control-panel select { width: 100%; padding: 10px; margin: 6px 0; background: #0d0d0d; border: 1px solid #333; color: #fff; border-radius: 6px; }
+        .control-panel button { background: #0f8; color: #000; font-weight: 800; cursor: pointer; border: none; }
+        .btn-logout { background: #f44 !important; color: #fff !important; margin-top: 15px !important; }
+
+        .lista-jogos { max-height: 250px; overflow-y: auto; background: #000; border: 1px solid #333; padding: 5px; margin-top: 10px; border-radius: 6px; }
+        .jogo-item { padding: 10px; margin: 4px 0; background: #111; border-radius: 4px; cursor: pointer; font-size: 13px; border-left: 3px solid transparent; }
+        .jogo-item:hover { background: #222; }
+        .jogo-item.live { border-left-color: #0f8; background: #002a14; }
+        
+        .log { font-size: 11px; color: #888; background: #000; padding: 8px; max-height: 100px; overflow-y: auto; margin-top: 10px; border-radius: 4px; border: 1px solid #222; }
+        .data-info { background: #030; color: #0f8; padding: 8px; text-align: center; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+    </style>
 </head>
 <body>
-<div class="login-screen" id="loginScreen"><div class="login-box"><h2>⚽ DASHBOARD</h2><input id="loginEmail" placeholder="Email"><input id="loginPass" type="password" placeholder="Senha"><button id="btnLogin">ENTRAR</button></div></div>
-<div id="dashboard" class="hidden">
-<button class="toggle-btn" onclick="panel.classList.toggle('active')">⚙️</button>
-<div class="control-panel" id="panel">
-  <div class="data-info" id="dataInfo"></div>
-  <input id="apiKey" type="text" placeholder="Cole sua API Key aqui" style="font-family:monospace">
-  <div style="display:flex;gap:5px"><button onclick="salvarKey()" style="flex:2">Salvar</button><button onclick="testarKey()" style="flex:1;background:#f80">Testar</button></div>
-  <div id="keyStatus" style="font-size:10px;color:#888"></div>
-  <select id="ligaSelect"><option value="all">Todas</option><option value="13">Libertadores</option><option value="11">Sul-Americana</option><option value="71">Brasileirão</option><option value="39">Premier</option></select>
-  <button onclick="listarJogos()">Buscar Jogos Hoje</button>
-  <div class="lista-jogos" id="listaJogos"></div>
-  <div class="log" id="debugLog"></div>
+
+<!-- Tela de Login -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <h2 style="margin-bottom:20px">⚽ DASHBOARD LIVE</h2>
+        <input id="loginEmail" type="email" placeholder="Seu Email">
+        <input id="loginPass" type="password" placeholder="Sua Senha">
+        <button id="btnLogin">ENTRAR NO SISTEMA</button>
+    </div>
 </div>
-<div class="scoreboard"><div class="team"><img id="logoA"><span id="teamA">A</span></div><div class="score"><span id="scoreA">0</span> x <span id="scoreB">0</span></div><div class="team"><span id="teamB">B</span><img id="logoB"></div></div>
-<div class="team-list left"><div class="team-header" id="headerA"><img id="hLogoA"><span>A</span></div><div class="players-container" id="playersA"></div></div>
-<div class="team-list right"><div class="team-header" id="headerB"><img id="hLogoB"><span>B</span></div><div class="players-container" id="playersB"></div></div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="hidden">
+    <button class="toggle-btn" id="btnToggle">⚙️</button>
+    
+    <div class="control-panel" id="panel">
+        <div class="data-info" id="dataInfo">CARREGANDO DATA...</div>
+        
+        <label style="font-size: 11px; color: #888;">API KEY FOOTBALL-API:</label>
+        <input id="apiKey" type="text" placeholder="Cole sua API Key aqui">
+        <div style="display:flex;gap:5px">
+            <button onclick="salvarKey()" style="flex:2">Salvar Key</button>
+            <button onclick="testarKey()" style="flex:1;background:#f80">Testar</button>
+        </div>
+        <div id="keyStatus" style="font-size:10px; margin-bottom:10px"></div>
+
+        <select id="ligaSelect">
+            <option value="all">Todas as Ligas</option>
+            <option value="13">Libertadores</option>
+            <option value="11">Sul-Americana</option>
+            <option value="71">Brasileirão Série A</option>
+            <option value="39">Premier League</option>
+            <option value="140">La Liga</option>
+        </select>
+        
+        <button onclick="listarJogos()">BUSCAR JOGOS DE HOJE</button>
+        <div class="lista-jogos" id="listaJogos">Selecione uma liga ou busque todas.</div>
+        
+        <div class="log" id="debugLog"></div>
+        
+        <!-- Botão de Logout Corrigido -->
+        <button class="btn-logout" id="btnLogout">SAIR DO DASHBOARD</button>
+    </div>
+
+    <!-- Interface do Placar -->
+    <div class="scoreboard">
+        <div class="team"><img id="logoA" src=""><span id="teamA">Mandante</span></div>
+        <div class="score"><span id="scoreA">0</span> x <span id="scoreB">0</span></div>
+        <div class="team"><span id="teamB">Visitante</span><img id="logoB" src=""></div>
+    </div>
+
+    <!-- Listas Laterais -->
+    <div class="team-list left">
+        <div class="team-header" id="headerA"><img id="hLogoA" src=""><span>MANDANTE</span></div>
+        <div class="players-container" id="playersA"></div>
+    </div>
+
+    <div class="team-list right">
+        <div class="team-header" id="headerB"><img id="hLogoB" src=""><span>VISITANTE</span></div>
+        <div class="players-container" id="playersB"></div>
+    </div>
 </div>
 
 <script type="module">
-import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import {getAuth,signInWithEmailAndPassword,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-initializeApp({apiKey:"AIzaSyDm1qde0ZvKUBzhEQDqst8UDPE_t1tOMp8",authDomain:"dashboard-futebol.firebaseapp.com",projectId:"dashboard-futebol"});
-const auth=getAuth();
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-// DECLARAÇÕES CORRIGIDAS
-const apiKeyEl=document.getElementById('apiKey');
-const debugLog=document.getElementById('debugLog');
-const listaJogos=document.getElementById('listaJogos');
-const dataInfo=document.getElementById('dataInfo');
-const keyStatus=document.getElementById('keyStatus');
+    // Configuração Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDm1qde0ZvKUBzhEQDqst8UDPE_t1tOMp8",
+        authDomain: "dashboard-futebol.firebaseapp.com",
+        projectId: "dashboard-futebol"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
 
-btnLogin.onclick=async()=>{try{await signInWithEmailAndPassword(auth,loginEmail.value,loginPass.value)}catch(e){alert(e.message)}};
-onAuthStateChanged(auth,u=>{if(u){loginScreen.classList.add('hidden');dashboard.classList.remove('hidden');init()}});
+    // Referências do DOM
+    const loginScreen = document.getElementById('loginScreen');
+    const dashboard = document.getElementById('dashboard');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPass = document.getElementById('loginPass');
+    const btnLogin = document.getElementById('btnLogin');
+    const btnLogout = document.getElementById('btnLogout');
+    const btnToggle = document.getElementById('btnToggle');
+    const panel = document.getElementById('panel');
+    const apiKeyEl = document.getElementById('apiKey');
+    const debugLog = document.getElementById('debugLog');
+    const listaJogos = document.getElementById('listaJogos');
+    const dataInfo = document.getElementById('dataInfo');
+    const keyStatus = document.getElementById('keyStatus');
+    const ligaSelect = document.getElementById('ligaSelect');
 
-let apiKey='',reqCount=0,jogoAtual=null,homeId=null,awayId=null;
-let initialXI={A:[],B:[]},subsMap={A:{},B:{}},eventsCache=[],timer=null;
+    const teamA = document.getElementById('teamA'); const teamB = document.getElementById('teamB');
+    const logoA = document.getElementById('logoA'); const logoB = document.getElementById('logoB');
+    const hLogoA = document.getElementById('hLogoA'); const hLogoB = document.getElementById('hLogoB');
+    const scoreA = document.getElementById('scoreA'); const scoreB = document.getElementById('scoreB');
+    const headerA = document.getElementById('headerA'); const headerB = document.getElementById('headerB');
 
-function init(){
-  apiKey=localStorage.getItem('apiKey')||'';
-  apiKeyEl.value=apiKey;
-  const hoje=new Date().toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
-  dataInfo.innerText=`HOJE: ${hoje}`;
-  if(apiKey) keyStatus.innerHTML=`<span style="color:#0f8">Key carregada: ${apiKey.slice(0,6)}...</span>`;
-  log('Sistema pronto');
-}
-function log(m){debugLog.innerHTML=`[${new Date().toLocaleTimeString()}] ${m}<br>`+debugLog.innerHTML}
+    // Autenticação
+    btnLogin.onclick = async () => {
+        try { await signInWithEmailAndPassword(auth, loginEmail.value, loginPass.value); } 
+        catch (e) { alert("Erro de login: " + e.message); }
+    };
 
-window.salvarKey=()=>{
-  apiKey=apiKeyEl.value.trim().replace(/\s/g,''); // REMOVE ESPAÇOS
-  localStorage.setItem('apiKey',apiKey);
-  apiKeyEl.value=apiKey;
-  keyStatus.innerHTML=`<span style="color:#0f8">✓ Salva: ${apiKey.slice(0,6)}...${apiKey.slice(-4)}</span>`;
-  log('Key salva com '+apiKey.length+' caracteres');
-};
+    btnLogout.onclick = async () => {
+        if(timer) clearInterval(timer);
+        await signOut(auth);
+        location.reload(); 
+    };
 
-window.testarKey=async()=>{
-  if(!apiKey||apiKey.length<20){log('❌ Key muito curta');return}
-  log('Testando...');
-  try{
-    const r=await fetch('https://v3.football.api-sports.io/status',{headers:{'x-apisports-key':apiKey}});
-    const j=await r.json();
-    if(r.ok){log(`✓ VÁLIDA! ${j.response.requests.current}/${j.response.requests.limit_day} usados`);keyStatus.innerHTML='<span style="color:#0f0">✓ KEY OK</span>'}
-    else{log('❌ Inválida: '+j.message);keyStatus.innerHTML='<span style="color:#f00">❌ Inválida</span>'}
-  }catch(e){log('Erro: '+e.message)}
-};
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            loginScreen.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+            init();
+        } else {
+            loginScreen.classList.remove('hidden');
+            dashboard.classList.add('hidden');
+        }
+    });
 
-async function callAPI(url){
-  reqCount++;
-  const r=await fetch(url,{headers:{'x-apisports-key':apiKey}});
-  if(!r.ok)throw new Error(`HTTP ${r.status}`);
-  return r.json();
-}
-function getHoje(){return new Date().toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'})}
+    // Variáveis de Estado
+    let apiKey = '', jogoAtual = null, homeId = null, awayId = null;
+    let initialXI = { A: [], B: [] }, subsMap = { A: {}, B: {} }, eventsCache = [], timer = null;
 
-window.listarJogos=async()=>{
-  if(!apiKey)return alert('Salve a key primeiro');
-  listaJogos.innerHTML='Buscando...';
-  try{
-    const hoje=getHoje();
-    let url=`https://v3.football.api-sports.io/fixtures?date=${hoje}`;
-    if(ligaSelect.value!=='all')url+=`&league=${ligaSelect.value}`;
-    const data=await callAPI(url);
-    const jogos=data.response||[];
-    if(!jogos.length){listaJogos.innerHTML='Nenhum jogo hoje';return}
-    listaJogos.innerHTML=jogos.map(j=>`<div class="jogo-item ${['1H','2H'].includes(j.fixture.status.short)?'live':''}" onclick="selJogo(${j.fixture.id})">${j.teams.home.name} ${j.goals.home??0}x${j.goals.away??0} ${j.teams.away.name}<br><small>${j.league.name}</small></div>`).join('');
-    log(jogos.length+' jogos');
-  }catch(e){log('Erro: '+e.message);listaJogos.innerHTML='Erro: '+e.message}
-};
+    btnToggle.onclick = () => panel.classList.toggle('active');
 
-window.selJogo=async id=>{jogoAtual=id;if(timer)clearInterval(timer);await carregar();timer=setInterval(carregar,25000)};
+    function init() {
+        apiKey = localStorage.getItem('apiKey') || '';
+        apiKeyEl.value = apiKey;
+        const hoje = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+        dataInfo.innerText = `HOJE: ${hoje}`;
+        if (apiKey) keyStatus.innerHTML = `<span style="color:#0f8">Key salva e carregada.</span>`;
+        log('Dashboard Inicializado');
+    }
 
-async function carregar(){
-  try{
-    const d=await callAPI(`https://v3.football.api-sports.io/fixtures?id=${jogoAtual}`);const j=d.response[0];
-    homeId=j.teams.home.id;awayId=j.teams.away.id;
-    teamA.innerText=j.teams.home.name;teamB.innerText=j.teams.away.name;logoA.src=j.teams.home.logo;logoB.src=j.teams.away.logo;hLogoA.src=j.teams.home.logo;hLogoB.src=j.teams.away.logo;headerA.querySelector('span').innerText=j.teams.home.name;headerB.querySelector('span').innerText=j.teams.away.name;scoreA.innerText=j.goals.home??0;scoreB.innerText=j.goals.away??0;
-    if(!initialXI.A.length){const l=await callAPI(`https://v3.football.api-sports.io/fixtures/lineups?fixture=${jogoAtual}`);if(l.response.length){initialXI.A=l.response[0].startXI.map(p=>p.player);initialXI.B=l.response[1].startXI.map(p=>p.player);l.response[0].substitutes.forEach(s=>subsMap.A[s.player.id]=s.player);l.response[1].substitutes.forEach(s=>subsMap.B[s.player.id]=s.player)}}
-    const ev=await callAPI(`https://v3.football.api-sports.io/fixtures/events?fixture=${jogoAtual}`);eventsCache=ev.response||[];atualizar();
-  }catch(e){log('Falha: '+e.message)}
-}
-function atualizar(){['A','B'].forEach(t=>{const id=t==='A'?homeId:awayId;if(!initialXI[t].length)return;let xi=[...initialXI[t]];const st={};xi.forEach(p=>st[p.id]={g:0,am:0,vm:0});eventsCache.filter(e=>e.team.id===id).forEach(ev=>{const p=ev.player?.id;if(!p)return;if(!st[p])st[p]={g:0,am:0,vm:0};if(ev.type==='Goal')st[p].g++;if(ev.type==='Card')ev.detail.includes('Yellow')?st[p].am++:st[p].vm++;if(ev.type==='subst'){const o=ev.player.id,i=ev.assist?.id,ix=xi.findIndex(x=>x.id===o);if(ix>-1&&i){xi[ix]=subsMap[t][i]||{id:i,name:ev.assist.name,number:'?'};st[i]={g:0,am:0,vm:0}}}});document.getElementById('players'+t).innerHTML=xi.map(p=>{const s=st[p.id]||{};return`<div class="player-row titular"><div class="player-num">${p.number||''}</div><div class="player-info"><div class="player-name">${p.name}</div></div><div class="player-icons">${s.g?`<span class="icon-badge icon-gol">⚽${s.g}</span>`:''}${s.am?`<span class="icon-badge">🟨</span>`:''}${s.vm?`<span class="icon-badge">🟥</span>`:''}</div></div>`}).join('')})}
+    function log(m) { debugLog.innerHTML = `[${new Date().toLocaleTimeString()}] ${m}<br>` + debugLog.innerHTML; }
+
+    window.salvarKey = () => {
+        apiKey = apiKeyEl.value.trim().replace(/\s/g, '');
+        localStorage.setItem('apiKey', apiKey);
+        keyStatus.innerHTML = `<span style="color:#0f8">✓ Key atualizada.</span>`;
+        log('Configurações salvas.');
+    };
+
+    // Função Robusta de Chamada à API
+    async function callAPI(url) {
+        if (!apiKey) throw new Error("API Key ausente.");
+        const r = await fetch(url, { headers: { 'x-apisports-key': apiKey } });
+        const data = await r.json();
+        
+        // A API Sports retorna erros dentro do JSON mesmo com status 200
+        if (data.errors && Object.keys(data.errors).length > 0) {
+            const erroMsg = Object.values(data.errors)[0];
+            throw new Error(erroMsg);
+        }
+        return data;
+    }
+
+    window.testarKey = async () => {
+        log('Testando validade da Key...');
+        try {
+            const j = await callAPI('https://v3.football.api-sports.io/status');
+            log(`✓ OK! ${j.response.requests.current}/${j.response.requests.limit_day} requisições usadas.`);
+            keyStatus.innerHTML = '<span style="color:#0f0">✓ KEY ATIVA</span>';
+        } catch (e) {
+            log('❌ Erro: ' + e.message);
+            keyStatus.innerHTML = '<span style="color:#f44">❌ KEY INVÁLIDA</span>';
+        }
+    };
+
+    function getHojeISO() { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }); }
+
+    window.listarJogos = async () => {
+        listaJogos.innerHTML = 'Buscando partidas...';
+        try {
+            const data = await callAPI(`https://v3.football.api-sports.io/fixtures?date=${getHojeISO()}`);
+            let jogos = data.response || [];
+
+            // Filtro local (mais estável que filtro da API)
+            if (ligaSelect.value !== 'all') {
+                jogos = jogos.filter(j => String(j.league.id) === ligaSelect.value);
+            }
+
+            if (!jogos.length) { listaJogos.innerHTML = 'Nenhum jogo nesta liga hoje.'; return; }
+
+            listaJogos.innerHTML = jogos.map(j => `
+                <div class="jogo-item ${['1H', '2H', 'HT'].includes(j.fixture.status.short) ? 'live' : ''}" onclick="selJogo(${j.fixture.id})">
+                    <strong>${j.teams.home.name} ${j.goals.home ?? 0}x${j.goals.away ?? 0} ${j.teams.away.name}</strong><br>
+                    <small>${j.league.name} - ${j.fixture.status.long}</small>
+                </div>
+            `).join('');
+            log(jogos.length + ' jogos encontrados.');
+        } catch (e) {
+            log('Erro ao listar: ' + e.message);
+            listaJogos.innerHTML = 'Falha ao buscar jogos.';
+        }
+    };
+
+    window.selJogo = async id => {
+        jogoAtual = id;
+        initialXI = { A: [], B: [] }; // Reseta escalações para o novo jogo
+        if (timer) clearInterval(timer);
+        log('Carregando jogo ' + id);
+        await carregar();
+        timer = setInterval(carregar, 30000); // Atualiza a cada 30 segundos
+        panel.classList.remove('active');
+    };
+
+    async function carregar() {
+        try {
+            const d = await callAPI(`https://v3.football.api-sports.io/fixtures?id=${jogoAtual}`);
+            if (!d.response.length) return;
+            const j = d.response[0];
+
+            // Atualiza Top Scoreboard
+            homeId = j.teams.home.id; awayId = j.teams.away.id;
+            teamA.innerText = j.teams.home.name; teamB.innerText = j.teams.away.name;
+            logoA.src = j.teams.home.logo; logoB.src = j.teams.away.logo;
+            hLogoA.src = j.teams.home.logo; hLogoB.src = j.teams.away.logo;
+            headerA.querySelector('span').innerText = j.teams.home.name;
+            headerB.querySelector('span').innerText = j.teams.away.name;
+            scoreA.innerText = j.goals.home ?? 0; scoreB.innerText = j.goals.away ?? 0;
+
+            // Busca Escalação se ainda não tiver
+            if (!initialXI.A.length) {
+                const l = await callAPI(`https://v3.football.api-sports.io/fixtures/lineups?fixture=${jogoAtual}`);
+                if (l.response && l.response.length >= 2) {
+                    initialXI.A = l.response[0].startXI.map(p => p.player);
+                    initialXI.B = l.response[1].startXI.map(p => p.player);
+                    l.response[0].substitutes.forEach(s => subsMap.A[s.player.id] = s.player);
+                    l.response[1].substitutes.forEach(s => subsMap.B[s.player.id] = s.player);
+                }
+            }
+
+            // Busca Eventos (Gols e Cartões)
+            const ev = await callAPI(`https://v3.football.api-sports.io/fixtures/events?fixture=${jogoAtual}`);
+            eventsCache = ev.response || [];
+            atualizarInterface();
+        } catch (e) { log('Erro no loop: ' + e.message); }
+    }
+
+    function atualizarInterface() {
+        ['A', 'B'].forEach(t => {
+            const teamId = (t === 'A') ? homeId : awayId;
+            if (!initialXI[t].length) {
+                document.getElementById('players' + t).innerHTML = "<p style='padding:20px; color:#555'>Aguardando escalação...</p>";
+                return;
+            }
+
+            let playersList = [...initialXI[t]];
+            const stats = {};
+            playersList.forEach(p => stats[p.id] = { g: 0, am: 0, vm: 0 });
+
+            // Processa eventos para cada jogador
+            eventsCache.filter(e => e.team.id === teamId).forEach(ev => {
+                const pid = ev.player?.id;
+                if (!pid) return;
+                if (!stats[pid]) stats[pid] = { g: 0, am: 0, vm: 0 };
+                
+                if (ev.type === 'Goal') stats[pid].g++;
+                if (ev.type === 'Card') ev.detail.includes('Yellow') ? stats[pid].am++ : stats[pid].vm++;
+                
+                // Trata substituições na visualização
+                if (ev.type === 'subst') {
+                    const outId = ev.player.id;
+                    const inId = ev.assist?.id;
+                    const idx = playersList.findIndex(x => x.id === outId);
+                    if (idx > -1 && inId) {
+                        playersList[idx] = subsMap[t][inId] || { id: inId, name: ev.assist.name, number: '?' };
+                        stats[inId] = { g: 0, am: 0, vm: 0 };
+                    }
+                }
+            });
+
+            document.getElementById('players' + t).innerHTML = playersList.map(p => {
+                const s = stats[p.id] || { g: 0, am: 0, vm: 0 };
+                return `
+                    <div class="player-row titular">
+                        <div class="player-num">${p.number || ''}</div>
+                        <div class="player-info">
+                            <div class="player-name">${p.name}</div>
+                        </div>
+                        <div class="player-icons">
+                            ${s.g ? `<span class="icon-badge icon-gol">⚽ ${s.g}</span>` : ''}
+                            ${s.am ? `<span class="icon-badge" style="background:#fc0;color:#000">🟨</span>` : ''}
+                            ${s.vm ? `<span class="icon-badge" style="background:#f00;color:#fff">🟥</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
+    }
 </script>
 </body>
 </html>
