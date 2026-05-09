@@ -2,27 +2,24 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Streamer Dashboard Pro - Layout Otimizado</title>
+    <title>Streamer Dashboard - Final Edition</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { width: 1920px; height: 1080px; background: #070707; font-family: 'Inter', sans-serif; color: #fff; overflow: hidden; }
         
-        /* SCROLLBAR CUSTOMIZADA (ESTILO DARK) */
-        ::-webkit-scrollbar { width: 5px; }
+        /* SCROLLBAR CUSTOMIZADA */
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #111; }
         ::-webkit-scrollbar-thumb { background: #0f8; border-radius: 10px; }
 
-        /* BANNER STATUS */
+        /* STATUS BANNER */
         .match-status-banner {
             position: absolute; top: 0; left: 0; width: 100%; height: 30px;
             background: #111; display: flex; align-items: center; justify-content: center;
-            font-weight: 900; text-transform: uppercase; font-size: 12px;
-            border-bottom: 1px solid #333; z-index: 100;
+            font-weight: 900; text-transform: uppercase; font-size: 12px; border-bottom: 1px solid #333; z-index: 100;
         }
-        .status-danger { background: #b00; animation: pulse-red 1s infinite; }
-        @keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-        /* PLACAR */
+        /* PLACAR CENTRAL */
         .scoreboard { 
             position: absolute; top: 45px; left: 50%; transform: translateX(-50%); 
             background: #151515; padding: 8px 35px; display: flex; gap: 25px; 
@@ -32,46 +29,43 @@
         .team img { width: 40px; height: 40px; object-fit: contain; }
         .score { font-size: 45px; color: #0f8; min-width: 110px; text-align: center; font-family: 'Monaco', monospace; }
 
-        /* LISTAS ESQUERDA (DIMINUÍDAS COM SCROLL) */
-        .lists-wrapper { position: absolute; top: 110px; left: 25px; width: 440px; display: flex; gap: 10px; }
-        .team-list { width: 215px; }
-        .team-header { background: #0f8; color: #000; padding: 6px; border-radius: 6px 6px 0 0; font-weight: 900; display: flex; gap: 5px; align-items: center; font-size: 10px; overflow: hidden; white-space: nowrap; }
-        .players-container { background: rgba(15,15,15,0.9); border: 1px solid #333; padding: 5px; height: 600px; overflow-y: auto; border-radius: 0 0 6px 6px; }
-        .player-row { display: flex; align-items: center; gap: 6px; padding: 6px; margin: 2px 0; background: #1a1a1a; border-radius: 4px; font-size: 10px; cursor: pointer; border-left: 2px solid transparent; }
-        .player-row:hover { border-left-color: #0f8; background: #252525; }
+        /* LISTAS À ESQUERDA (CURTAS COM SCROLL) */
+        .lists-wrapper { position: absolute; top: 110px; left: 25px; width: 460px; display: flex; gap: 10px; }
+        .team-list { width: 225px; }
+        .team-header { background: #0f8; color: #000; padding: 8px; border-radius: 6px 6px 0 0; font-weight: 900; font-size: 10px; text-align: center; white-space: nowrap; overflow: hidden; }
+        .players-container { background: rgba(15,15,15,0.9); border: 1px solid #333; padding: 5px; height: 580px; overflow-y: auto; border-radius: 0 0 6px 6px; }
+        .player-row { display: flex; align-items: center; gap: 8px; padding: 6px; margin: 2px 0; background: #1a1a1a; border-radius: 4px; font-size: 10px; cursor: pointer; border-left: 3px solid transparent; }
+        .player-row:hover { border-left-color: #0f8; background: #222; }
 
         /* CAMPO CENTRAL */
-        .center-area { position: absolute; top: 110px; left: 500px; width: 850px; display: flex; flex-direction: column; align-items: center; }
+        .center-area { position: absolute; top: 110px; left: 500px; width: 880px; display: flex; flex-direction: column; align-items: center; }
         .pitch-container { 
-            position: relative; width: 520px; height: 720px; 
-            background: #0a1a10; border: 2px solid #0f8; border-radius: 8px; 
-            overflow: hidden; box-shadow: inset 0 0 40px #000; margin-top: 10px;
+            position: relative; width: 500px; height: 680px; background: #0a1a10; border: 2px solid #0f8; border-radius: 8px; 
+            overflow: hidden; box-shadow: inset 0 0 50px #000; margin-top: 10px;
         }
-        .player-dot { position: absolute; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; transform: translate(-50%, -50%); border: 2px solid #000; z-index: 5; transition: 0.2s; }
+        .player-dot { position: absolute; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; transform: translate(-50%, -50%); border: 2px solid #000; transition: 0.2s; }
         .player-dot.home { background: #0f8; color: #000; }
         .player-dot.away { background: #fff; color: #000; }
-        .player-dot.highlight { transform: translate(-50%, -50%) scale(1.8) !important; box-shadow: 0 0 25px #0f8; z-index: 100; }
+        .player-dot.highlight { transform: translate(-50%, -50%) scale(1.8) !important; box-shadow: 0 0 20px #0f8; z-index: 100; }
 
-        /* DIREITA: STATS + CAMERA */
-        .right-sidebar { position: absolute; top: 110px; right: 30px; width: 500px; display: flex; flex-direction: column; gap: 15px; }
+        /* LADO DIREITO (STATS + CAMERA) */
+        .right-sidebar { position: absolute; top: 110px; right: 30px; width: 480px; display: flex; flex-direction: column; gap: 15px; }
         .stats-pro { background: #151515; border: 1px solid #333; border-radius: 12px; padding: 15px; }
-        .stat-box { margin-bottom: 10px; }
-        .stat-label { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; color: #aaa; margin-bottom: 3px; text-transform: uppercase; }
-        .stat-bar-outer { height: 7px; background: #222; border-radius: 4px; display: flex; overflow: hidden; border: 1px solid #333; }
+        .stat-box { margin-bottom: 12px; }
+        .stat-label { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; color: #888; margin-bottom: 4px; }
+        .stat-bar-outer { height: 8px; background: #222; border-radius: 4px; display: flex; overflow: hidden; }
         .bar-h { background: #0f8; height: 100%; transition: 1s ease; }
         .bar-a { background: #fff; height: 100%; transition: 1s ease; }
-        .camera-box { width: 500px; height: 281px; border: 2px solid #333; border-radius: 12px; background: #000; display: flex; align-items: center; justify-content: center; color: #444; font-weight: bold; text-transform: uppercase; font-size: 14px; }
+        .camera-box { width: 480px; height: 270px; border: 2px solid #333; border-radius: 12px; background: #000; display: flex; align-items: center; justify-content: center; color: #444; font-size: 12px; }
 
-        /* CONFIGURAÇÕES */
+        /* PAINEL DE CONFIGURAÇÕES */
         .settings-btn { position: fixed; top: 5px; right: 10px; background: none; border: none; color: #444; cursor: pointer; z-index: 1001; font-size: 14px; }
-        .config-panel { position: fixed; top: 35px; right: 10px; width: 350px; background: #1a1a1a; border: 1px solid #333; padding: 15px; border-radius: 8px; display: none; z-index: 1000; box-shadow: 0 10px 30px #000; }
+        .config-panel { position: fixed; top: 35px; right: 10px; width: 350px; background: #1a1a1a; border: 1px solid #333; padding: 15px; border-radius: 8px; display: none; z-index: 1000; }
         .config-panel.active { display: block; }
-        .config-panel input { width: 100%; padding: 8px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 10px; border-radius: 4px; }
-        .btn-group { display: flex; gap: 5px; margin-bottom: 10px; }
-        .btn-group button { flex: 1; padding: 8px; font-size: 10px; font-weight: bold; cursor: pointer; border: none; border-radius: 4px; background: #333; color: #fff; }
-        .btn-group button.active { background: #0f8; color: #000; }
-        .live-list { max-height: 250px; overflow-y: auto; border: 1px solid #222; }
-        .live-item { padding: 8px; border-bottom: 1px solid #222; cursor: pointer; font-size: 11px; }
+        .config-input { width: 100%; padding: 8px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 8px; border-radius: 4px; }
+        .btn-action { width: 100%; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 5px; }
+        .live-list { max-height: 200px; overflow-y: auto; border: 1px solid #333; margin-top: 10px; }
+        .live-item { padding: 8px; border-bottom: 1px solid #222; cursor: pointer; font-size: 11px; display: flex; justify-content: space-between; }
         .live-item:hover { background: #222; }
     </style>
 </head>
@@ -97,7 +91,7 @@
     </div>
 
     <div class="center-area">
-        <div id="timerVal" style="font-size: 22px; color: #0f8; font-weight: 900; margin-bottom: 5px;">--'</div>
+        <div id="timerVal" style="font-size: 20px; color: #0f8; font-weight: 900;">--'</div>
         <div class="pitch-container" id="pitch"></div>
     </div>
 
@@ -107,62 +101,64 @@
             <div class="stat-box"><div class="stat-label"><span id="vSOnA">0</span> NO GOL <span id="vSOnB">0</span></div><div class="stat-bar-outer"><div id="bSOnA" class="bar-h" style="width: 50%"></div><div id="bSOnB" class="bar-a" style="width: 50%"></div></div></div>
             <div class="stat-box"><div class="stat-label"><span id="vFoulA">0</span> FALTAS <span id="vFoulB">0</span></div><div class="stat-bar-outer"><div id="bFoulA" class="bar-h" style="width: 50%"></div><div id="bFoulB" class="bar-a" style="width: 50%"></div></div></div>
             <div class="stat-box"><div class="stat-label"><span id="vCardA">0</span> AMARELOS <span id="vCardB">0</span></div><div class="stat-bar-outer"><div id="bCardA" class="bar-h" style="width: 50%"></div><div id="bCardB" class="bar-a" style="width: 50%"></div></div></div>
-            <div class="stat-box"><div class="stat-label"><span id="vOffA">0</span> IMPED. <span id="vOffB">0</span></div><div class="stat-bar-outer"><div id="bOffA" class="bar-h" style="width: 50%"></div><div id="bOffB" class="bar-a" style="width: 50%"></div></div></div>
         </div>
-        <div class="camera-box">WEBCAM STREAMER</div>
+        <div class="camera-box">WEBCAM DO STREAMER</div>
     </div>
 
-    <button class="settings-btn" onclick="toggleConfig()">⚙️</button>
+    <button class="settings-btn" onclick="toggleConfig()">⚙️ CONFIGS</button>
     
     <div class="config-panel" id="configPanel">
-        <input type="password" id="apiKey" placeholder="Sua API Key">
-        <div class="btn-group">
-            <button id="btnLive" class="active" onclick="mudarModo('live')">AO VIVO</button>
-            <button id="btnToday" onclick="mudarModo('today')">JOGOS DE HOJE</button>
+        <input type="password" id="apiKey" class="config-input" placeholder="API Key">
+        <button onclick="salvarKey()" class="btn-action" style="background:#0f8; color:#000;">SALVAR KEY</button>
+        <button onclick="buscarJogos()" class="btn-action" style="background:#333; color:#fff;">BUSCAR JOGOS (TESTAR API)</button>
+        
+        <div style="display:flex; gap:5px; margin: 10px 0;">
+            <button onclick="setModo('live')" id="m1" style="flex:1; padding:5px; font-size:10px; cursor:pointer">AO VIVO</button>
+            <button onclick="setModo('today')" id="m2" style="flex:1; padding:5px; font-size:10px; cursor:pointer">HOJE</button>
         </div>
-        <input type="text" id="gameSearch" placeholder="🔍 Filtrar time..." oninput="filtrarJogos()">
+
+        <input type="text" id="gameSearch" class="config-input" placeholder="🔍 Filtrar time..." oninput="filtrar()">
         <div id="listaLive" class="live-list"></div>
     </div>
 
     <script>
         let KEY = localStorage.getItem('apiKey') || '';
-        let loop = null;
-        let cacheLineup = null;
-        let jogosCache = [];
-        let modoAtual = 'live';
+        let loop = null, cacheLineup = null, jogosCache = [], modo = 'live';
 
         document.getElementById('apiKey').value = KEY;
 
         function toggleConfig() { document.getElementById('configPanel').classList.toggle('active'); }
 
-        async function mudarModo(modo) {
-            modoAtual = modo;
-            document.getElementById('btnLive').className = modo === 'live' ? 'active' : '';
-            document.getElementById('btnToday').className = modo === 'today' ? 'active' : '';
-            await carregarLista();
+        function salvarKey() {
+            KEY = document.getElementById('apiKey').value;
+            localStorage.setItem('apiKey', KEY);
+            alert("Key salva com sucesso!");
         }
 
-        async function carregarLista() {
-            if(!KEY) return;
-            const endpoint = modoAtual === 'live' ? 'fixtures?live=all' : `fixtures?date=${new Date().toISOString().split('T')[0]}`;
-            const r = await fetch(`https://v3.football.api-sports.io/${endpoint}`, { headers: { 'x-apisports-key': KEY } });
-            const data = await r.json();
-            jogosCache = data.response || [];
-            filtrarJogos();
+        async function buscarJogos() {
+            if(!KEY) return alert("Insira a Key primeiro!");
+            const path = modo === 'live' ? 'fixtures?live=all' : `fixtures?date=${new Date().toISOString().split('T')[0]}`;
+            try {
+                const r = await fetch(`https://v3.football.api-sports.io/${path}`, { headers: { 'x-apisports-key': KEY } });
+                const data = await r.json();
+                jogosCache = data.response || [];
+                filtrar();
+            } catch(e) { alert("Erro ao testar API: " + e.message); }
         }
 
-        function filtrarJogos() {
-            const termo = document.getElementById('gameSearch').value.toLowerCase();
-            const filtered = jogosCache.filter(f => f.teams.home.name.toLowerCase().includes(termo) || f.teams.away.name.toLowerCase().includes(termo));
-            document.getElementById('listaLive').innerHTML = filtered.map(f => `
-                <div class="live-item" onclick="selecionarJogo(${f.fixture.id})">
-                    ${f.teams.home.name} x ${f.teams.away.name} <span>${f.fixture.status.elapsed || 'vende'}'</span>
+        function setModo(m) { modo = m; buscarJogos(); }
+
+        function filtrar() {
+            const t = document.getElementById('gameSearch').value.toLowerCase();
+            const f = jogosCache.filter(j => j.teams.home.name.toLowerCase().includes(t) || j.teams.away.name.toLowerCase().includes(t));
+            document.getElementById('listaLive').innerHTML = f.map(j => `
+                <div class="live-item" onclick="selecionar(${j.fixture.id})">
+                    ${j.teams.home.name} x ${j.teams.away.name} <span>${j.fixture.status.elapsed || 0}'</span>
                 </div>
-            `).join('') || '<div style="padding:10px">Nenhum jogo encontrado</div>';
+            `).join('') || '<div style="padding:10px">Nenhum jogo.</div>';
         }
 
-        // ... (Funções selecionarJogo, atualizar, renderLists, renderPitch e updateStats permanecem as mesmas do código anterior) ...
-        async function selecionarJogo(id) {
+        async function selecionar(id) {
             toggleConfig();
             if(loop) clearInterval(loop);
             cacheLineup = null;
@@ -171,35 +167,33 @@
         }
 
         async function atualizar(id) {
-            const r = await fetch(`https://v3.football.api-sports.io/fixtures?id=${id}`, { headers: { 'x-apisports-key': KEY } });
-            const s = await fetch(`https://v3.football.api-sports.io/fixtures/statistics?fixture=${id}`, { headers: { 'x-apisports-key': KEY } });
-            const dataMain = await r.json();
-            const dataStats = await s.json();
-            const f = dataMain.response[0];
-            
+            const [m, s] = await Promise.all([
+                fetch(`https://v3.football.api-sports.io/fixtures?id=${id}`, { headers: { 'x-apisports-key': KEY } }).then(r => r.json()),
+                fetch(`https://v3.football.api-sports.io/fixtures/statistics?fixture=${id}`, { headers: { 'x-apisports-key': KEY } }).then(r => r.json())
+            ]);
+            const f = m.response[0];
             document.getElementById('teamA').innerText = f.teams.home.name;
             document.getElementById('teamB').innerText = f.teams.away.name;
             document.getElementById('logoA').src = f.teams.home.logo;
             document.getElementById('logoB').src = f.teams.away.logo;
             document.getElementById('scA').innerText = f.goals.home ?? 0;
             document.getElementById('scB').innerText = f.goals.away ?? 0;
-            document.getElementById('timerVal').innerText = (f.fixture.status.elapsed || 0) + "'";
+            document.getElementById('timerVal').innerText = f.fixture.status.elapsed + "'";
 
             if(!cacheLineup) {
-                const l = await fetch(`https://v3.football.api-sports.io/fixtures/lineups?fixture=${id}`, { headers: { 'x-apisports-key': KEY } });
-                const dataLine = await l.json();
-                cacheLineup = dataLine.response;
+                const l = await fetch(`https://v3.football.api-sports.io/fixtures/lineups?fixture=${id}`, { headers: { 'x-apisports-key': KEY } }).then(r => r.json());
+                cacheLineup = l.response;
                 renderLists();
             }
-            updateStats(dataStats.response);
+            updateStats(s.response);
             renderPitch();
         }
 
         function renderLists() {
-            const draw = (idx, listId, headerId) => {
-                const team = cacheLineup[idx];
-                document.getElementById(headerId).innerText = team.team.name;
-                document.getElementById(listId).innerHTML = team.startXI.map(p => `
+            const draw = (idx, listId, hId) => {
+                const t = cacheLineup[idx];
+                document.getElementById(hId).innerText = t.team.name;
+                document.getElementById(listId).innerHTML = t.startXI.map(p => `
                     <div class="player-row" onmouseenter="highlight(${p.player.id})" onmouseleave="unhighlight(${p.player.id})">
                         <b style="color:#0f8; width:15px">${p.player.number}</b> ${p.player.name}
                     </div>
@@ -209,37 +203,36 @@
         }
 
         function renderPitch() {
-            const pitch = document.getElementById('pitch');
-            pitch.innerHTML = '';
+            const p = document.getElementById('pitch'); p.innerHTML = '';
             cacheLineup.forEach((team, idx) => {
-                const isHome = idx === 0;
-                team.startXI.forEach(p => {
-                    const [r, c] = p.player.grid.split(':').map(Number);
-                    const top = isHome ? 95 - (r * 12) : (r * 12);
-                    const left = isHome ? (c * 20) : 100 - (c * 20);
-                    pitch.innerHTML += `<div class="player-dot ${isHome?'home':'away'}" style="top:${top}%; left:${left}%" data-id="${p.player.id}">${p.player.number}</div>`;
+                const home = idx === 0;
+                team.startXI.forEach(pl => {
+                    const [r, c] = pl.player.grid.split(':').map(Number);
+                    const top = home ? 95 - (r * 12) : (r * 12);
+                    const left = home ? (c * 20) : 100 - (c * 20);
+                    p.innerHTML += `<div class="player-dot ${home?'home':'away'}" style="top:${top}%; left:${left}%" data-id="${pl.player.id}">${pl.player.number}</div>`;
                 });
             });
         }
 
-        function updateStats(stats) {
-            if(!stats || stats.length < 2) return;
-            const updateBar = (id, type) => {
-                const valA = parseInt(stats[0].statistics.find(s => s.type === type)?.value) || 0;
-                const valB = parseInt(stats[1].statistics.find(s => s.type === type)?.value) || 0;
-                document.getElementById('v'+id+'A').innerText = type.includes('Possession') ? valA+'%' : valA;
-                document.getElementById('v'+id+'B').innerText = type.includes('Possession') ? valB+'%' : valB;
-                const total = (valA + valB) || 1;
-                document.getElementById('b'+id+'A').style.width = (valA/total*100)+'%';
-                document.getElementById('b'+id+'B').style.width = (valB/total*100)+'%';
+        function updateStats(s) {
+            if(!s || s.length < 2) return;
+            const up = (id, type) => {
+                const vA = parseInt(s[0].statistics.find(x => x.type === type)?.value) || 0;
+                const vB = parseInt(s[1].statistics.find(x => x.type === type)?.value) || 0;
+                document.getElementById('v'+id+'A').innerText = type.includes('Possession') ? vA+'%' : vA;
+                document.getElementById('v'+id+'B').innerText = type.includes('Possession') ? vB+'%' : vB;
+                const tot = (vA + vB) || 1;
+                document.getElementById('b'+id+'A').style.width = (vA/tot*100)+'%';
+                document.getElementById('b'+id+'B').style.width = (vB/tot*100)+'%';
             };
-            updateBar('Pos', 'Ball Possession'); updateBar('SOn', 'Shots on Goal'); updateBar('Foul', 'Fouls'); updateBar('Card', 'Yellow Cards'); updateBar('Off', 'Offsides');
+            up('Pos', 'Ball Possession'); up('SOn', 'Shots on Goal'); up('Foul', 'Fouls'); up('Card', 'Yellow Cards');
         }
 
         window.highlight = (id) => document.querySelector(`.player-dot[data-id="${id}"]`)?.classList.add('highlight');
         window.unhighlight = (id) => document.querySelector(`.player-dot[data-id="${id}"]`)?.classList.remove('highlight');
         
-        if(KEY) carregarLista();
+        if(KEY) buscarJogos();
     </script>
 </body>
 </html>
