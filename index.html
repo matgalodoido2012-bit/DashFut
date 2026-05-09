@@ -2,153 +2,128 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Futebol Pro - Ultra HUD</title>
+    <title>Dashboard Futebol Pro - Layout Original + Pro Stats</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { width: 1920px; height: 1080px; background: #070707; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; overflow: hidden; }
-
-        /* Banner de Status de Ataque (ITEM 2) */
+        body { width: 1920px; height: 1080px; background: #0a0a0a; font-family: 'Inter', sans-serif; color: #fff; overflow: hidden; }
+        
+        /* ITEM 2: BANNER DE STATUS (MOMENTUM) - NOVO */
         .match-status-banner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 40px;
-            background: #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 14px;
-            border-bottom: 1px solid #333;
-            z-index: 100;
-            transition: all 0.3s ease;
+            position: absolute; top: 0; left: 0; width: 100%; height: 35px;
+            background: #111; display: flex; align-items: center; justify-content: center;
+            font-weight: 900; text-transform: uppercase; font-size: 13px;
+            border-bottom: 1px solid #333; z-index: 100; transition: 0.3s;
         }
-        .status-danger { background: #900; animation: blink-red 1s infinite; color: #fff; }
-        .status-var { background: #409; color: #fff; }
+        .status-danger { background: #b00; animation: pulse-red 1s infinite; }
         .status-goal { background: #0f8; color: #000; }
+        @keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-        @keyframes blink-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        /* Placar Principal (Original) */
+        .scoreboard { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); background: #1a1a1a; padding: 12px 40px; display: flex; gap: 30px; border-radius: 12px; border: 1px solid #333; box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 10; }
+        .team { display: flex; align-items: center; gap: 15px; font-size: 24px; font-weight: 700; }
+        .team img { width: 50px; height: 50px; object-fit: contain; }
+        .score { font-size: 56px; color: #0f8; min-width: 140px; text-align: center; font-family: 'Courier New', monospace; }
 
-        /* Placar */
-        .scoreboard { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); background: #1a1a1a; padding: 15px 50px; display: flex; gap: 40px; border-radius: 8px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10; }
-        .team { display: flex; align-items: center; gap: 20px; font-size: 28px; font-weight: 800; }
-        .team img { width: 60px; height: 60px; object-fit: contain; }
-        .score-box { font-size: 64px; color: #0f8; min-width: 160px; text-align: center; font-family: 'Monaco', monospace; line-height: 1; }
+        /* Painel Central */
+        .center-panel { position: absolute; top: 150px; left: 580px; width: 760px; height: 850px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Cronômetro (Original) */
+        .match-timer-container { background: #111; border: 1px solid #333; padding: 8px 25px; border-radius: 30px; font-size: 20px; font-weight: bold; color: #0f8; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .pulse-dot { width: 10px; height: 10px; background: #f00; border-radius: 50%; animation: pulse 1s infinite; }
 
-        /* Estatísticas Comparativas (ITEM 1) */
-        .stats-overlay {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 500px;
-            background: rgba(15,15,15,0.95);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-        }
-        .stat-row { margin-bottom: 15px; }
-        .stat-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 900; margin-bottom: 5px; color: #aaa; }
-        .stat-bar-container { display: flex; height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
-        .bar-home { height: 100%; background: #0f8; transition: width 1s ease; }
-        .bar-away { height: 100%; background: #fff; transition: width 1s ease; }
-        .stat-center-label { position: absolute; left: 50%; transform: translateX(-50%); color: #fff; font-size: 11px; margin-top: -18px; text-transform: uppercase; }
-
-        /* Layout Lateral */
-        .side-panel { position: absolute; top: 150px; width: 480px; height: 800px; }
-        .left { left: 40px; }
-        .right { right: 40px; }
-        .panel-header { background: #222; padding: 15px; border-radius: 8px 8px 0 0; display: flex; align-items: center; gap: 15px; border-bottom: 3px solid #0f8; }
-        .panel-header img { width: 35px; }
-        .player-list { background: rgba(20,20,20,0.8); height: 740px; overflow-y: auto; padding: 10px; border-radius: 0 0 8px 8px; }
-
-        /* Jogador Row */
-        .p-row { display: flex; align-items: center; padding: 12px; margin-bottom: 6px; background: #181818; border-radius: 4px; cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; }
-        .p-row:hover { background: #252525; border-left-color: #0f8; }
-        .p-num { font-weight: 900; color: #0f8; width: 30px; }
-        .p-name { flex: 1; font-weight: 600; font-size: 15px; }
-
-        /* Centro (Campinho + Radar) */
-        .center-stage { position: absolute; top: 160px; left: 50%; transform: translateX(-50%); width: 700px; display: flex; flex-direction: column; align-items: center; }
-        .pitch { width: 360px; height: 480px; background: #0a1a10; border: 2px solid #0f8; border-radius: 10px; position: relative; margin-bottom: 30px; box-shadow: 0 0 50px rgba(0,0,0,1); }
-        .player-dot { position: absolute; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; transform: translate(-50%, -50%); border: 2px solid #000; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* CAMPINHO TÁTICO (Original) */
+        .pitch-container { position: relative; width: 340px; height: 420px; background: #0a1a10; border: 2px solid #0f8; border-radius: 8px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
+        .player-dot { position: absolute; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; transform: translate(-50%, -50%); border: 2px solid #000; z-index: 5; transition: all 0.2s ease; }
         .player-dot.home { background: #0f8; color: #000; }
         .player-dot.away { background: #fff; color: #000; }
-        .player-dot.highlight { transform: translate(-50%, -50%) scale(1.8); box-shadow: 0 0 20px #0f8; z-index: 99; }
+        .player-dot.highlight { transform: translate(-50%, -50%) scale(1.6) !important; box-shadow: 0 0 20px #0f8; z-index: 100; }
+
+        /* ITEM 1: ESTATÍSTICAS (INTEGRADO AO LAYOUT ANTERIOR) */
+        .stats-container { width: 450px; background: rgba(20,20,20,0.8); border: 1px solid #333; border-radius: 10px; padding: 15px; }
+        .stat-line { margin-bottom: 10px; }
+        .stat-info { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-bottom: 4px; font-weight: 800; text-transform: uppercase; }
+        .stat-bar-bg { height: 6px; background: #222; border-radius: 3px; display: flex; overflow: hidden; }
+        .bar-h { background: #0f8; height: 100%; transition: 1s ease; }
+        .bar-a { background: #fff; height: 100%; transition: 1s ease; }
+
+        /* Listas Laterais (Original) */
+        .team-list { position: absolute; top: 160px; width: 520px; }
+        .team-list.left { left: 30px; }
+        .team-list.right { right: 30px; }
+        .team-header { background: #0f8; color: #000; padding: 12px; border-radius: 8px 8px 0 0; font-weight: 900; display: flex; gap: 10px; align-items: center; }
+        .team-header img { width: 28px; }
+        .players-container { background: rgba(0,0,0,0.9); border: 1px solid #333; padding: 10px; height: 750px; overflow-y: auto; border-radius: 0 0 8px 8px; }
+        .player-row { display: flex; align-items: center; gap: 12px; padding: 10px; margin: 5px 0; background: #111; border-radius: 6px; cursor: pointer; border-left: 4px solid #333; }
+        .player-row:hover { background: #222; border-left-color: #0f8; }
 
         /* Controles */
-        .btn-config { position: fixed; bottom: 20px; right: 20px; background: #0f8; border: none; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 1000; }
-        .config-box { position: fixed; bottom: 80px; right: 20px; width: 300px; background: #1a1a1a; padding: 20px; border-radius: 8px; display: none; border: 1px solid #333; }
-        .config-box.active { display: block; }
-        input, select, button { width: 100%; padding: 10px; margin: 5px 0; background: #000; color: #fff; border: 1px solid #444; }
+        .toggle-btn { position: fixed; bottom: 20px; right: 20px; background: #0f8; color: #000; border: none; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 1000; font-size: 20px; }
+        .control-panel { position: fixed; bottom: 80px; right: 20px; width: 350px; background: #1a1a1a; border: 1px solid #333; padding: 20px; border-radius: 12px; display: none; z-index: 999; }
+        .control-panel.active { display: block; }
+        input, button, select { width: 100%; padding: 10px; margin: 5px 0; background: #000; color: #fff; border: 1px solid #444; border-radius: 6px; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- ITEM 2: STATUS DE ATAQUE -->
-    <div class="match-status-banner" id="matchStatus">
-        BOLA EM JOGO
-    </div>
+    <div class="match-status-banner" id="matchStatus">BOLA EM JOGO</div>
 
-    <!-- PLACAR -->
     <div class="scoreboard">
-        <div class="team"><img id="logoA" src=""> <span id="nameA">TIME A</span></div>
-        <div class="score-box"><span id="scA">0</span> - <span id="scB">0</span></div>
-        <div class="team"><span id="nameB">TIME B</span> <img id="logoB" src=""></div>
+        <div class="team"><img id="logoA" src=""> <span id="teamA">MANDANTE</span></div>
+        <div class="score"><span id="scA">0</span> x <span id="scB">0</span></div>
+        <div class="team"><span id="teamB">VISITANTE</span> <img id="logoB" src=""></div>
     </div>
 
-    <!-- ESCALAÇÕES -->
-    <div class="side-panel left">
-        <div class="panel-header"><img id="hLogoA" src=""> <span id="hNameA">---</span></div>
-        <div class="player-list" id="listA"></div>
+    <div class="team-list left">
+        <div class="team-header" id="hA"><span>---</span></div>
+        <div class="players-container" id="listA"></div>
     </div>
 
-    <div class="side-panel right">
-        <div class="panel-header"><img id="hLogoB" src=""> <span id="hNameB">---</span></div>
-        <div class="player-list" id="listB"></div>
+    <div class="team-list right">
+        <div class="team-header" id="hB"><span>---</span></div>
+        <div class="players-container" id="listB"></div>
     </div>
 
-    <!-- CAMPO CENTRAL -->
-    <div class="center-stage">
-        <div id="timerDisplay" style="font-size: 24px; color: #0f8; font-weight: 800; margin-bottom: 10px;">00:00</div>
-        <div class="pitch" id="pitch"></div>
-    </div>
-
-    <!-- ITEM 1: ESTATÍSTICAS COMPARATIVAS -->
-    <div class="stats-overlay">
-        <div class="stat-row">
-            <div class="stat-labels"><span id="valPosA">50%</span> <span class="stat-center-label">Posse de Bola</span> <span id="valPosB">50%</span></div>
-            <div class="stat-bar-container"><div id="barPosA" class="bar-home" style="width: 50%"></div><div id="barPosB" class="bar-away" style="width: 50%"></div></div>
+    <div class="center-panel">
+        <div class="match-timer-container">
+            <div class="pulse-dot" id="liveDot"></div>
+            <span id="timerVal">Aguardando...</span>
         </div>
-        <div class="stat-row">
-            <div class="stat-labels"><span id="valShotA">0</span> <span class="stat-center-label">Finalizações</span> <span id="valShotB">0</span></div>
-            <div class="stat-bar-container"><div id="barShotA" class="bar-home" style="width: 50%"></div><div id="barShotB" class="bar-away" style="width: 50%"></div></div>
-        </div>
-        <div class="stat-row">
-            <div class="stat-labels"><span id="valCornA">0</span> <span class="stat-center-label">Escanteios</span> <span id="valCornB">0</span></div>
-            <div class="stat-bar-container"><div id="barCornA" class="bar-home" style="width: 50%"></div><div id="barCornB" class="bar-away" style="width: 50%"></div></div>
+
+        <div class="pitch-container" id="pitch"></div>
+
+        <div class="stats-container">
+            <div class="stat-line">
+                <div class="stat-info"><span id="vPosA">50%</span> <span>Posse de Bola</span> <span id="vPosB">50%</span></div>
+                <div class="stat-bar-bg"><div id="bPosA" class="bar-h" style="width: 50%"></div><div id="bPosB" class="bar-a" style="width: 50%"></div></div>
+            </div>
+            <div class="stat-line">
+                <div class="stat-info"><span id="vShotA">0</span> <span>Finalizações</span> <span id="vShotB">0</span></div>
+                <div class="stat-bar-bg"><div id="bShotA" class="bar-h" style="width: 50%"></div><div id="bShotB" class="bar-a" style="width: 50%"></div></div>
+            </div>
+            <div class="stat-line">
+                <div class="stat-info"><span id="vCornA">0</span> <span>Escanteios</span> <span id="vCornB">0</span></div>
+                <div class="stat-bar-bg"><div id="bCornA" class="bar-h" style="width: 50%"></div><div id="bCornB" class="bar-a" style="width: 50%"></div></div>
+            </div>
         </div>
     </div>
 
-    <button class="btn-config" onclick="document.getElementById('cBox').classList.toggle('active')">⚙️</button>
-    <div class="config-box" id="cBox">
-        <input type="password" id="apiKey" placeholder="API Key API-Sports">
+    <button class="toggle-btn" onclick="document.querySelector('.control-panel').classList.toggle('active')">⚙️</button>
+    
+    <div class="control-panel">
+        <input type="password" id="apiKey" placeholder="API Key">
         <button onclick="salvarKey()">SALVAR KEY</button>
-        <button onclick="buscarJogos()" style="background:#0f8; color:#000">BUSCAR JOGOS HOJE</button>
-        <div id="jogosHoje" style="max-height: 200px; overflow-y:auto; font-size:12px; margin-top:10px"></div>
+        <button onclick="buscarJogos()" style="background:#0f8; color:#000">BUSCAR JOGOS</button>
+        <div id="lista" style="max-height:200px; overflow-y:auto; margin-top:10px; font-size:12px"></div>
         <hr style="margin:10px 0; border:0; border-top:1px solid #333">
-        <p style="font-size:10px; color:#888">Simulação de Ataque (Para Teste):</p>
-        <button onclick="simularStatus('danger')" style="background:#400; font-size:10px">SIMULAR ATAQUE</button>
-        <button onclick="simularStatus('normal')" style="background:#222; font-size:10px">NORMALIZAR</button>
+        <button onclick="simular('danger')" style="background:#500; font-size:10px">SIMULAR ATAQUE</button>
+        <button onclick="simular('normal')" style="background:#222; font-size:10px">NORMALIZAR</button>
     </div>
 
     <script>
         let KEY = localStorage.getItem('apiKey') || '';
-        let timerLoop = null;
+        let loop = null;
         let cacheLineup = null;
 
         document.getElementById('apiKey').value = KEY;
@@ -159,188 +134,110 @@
             alert('Key salva!');
         }
 
-        async function api(endpoint) {
-            const res = await fetch(`https://v3.football.api-sports.io/${endpoint}`, {
+        async function api(path) {
+            const r = await fetch(`https://v3.football.api-sports.io/${path}`, {
                 headers: { 'x-apisports-key': KEY }
             });
-            return res.json();
+            return r.json();
         }
 
         async function buscarJogos() {
             const date = new Date().toISOString().split('T')[0];
             const data = await api(`fixtures?date=${date}`);
-            const html = data.response.map(f => `
-                <div style="padding:5px; border-bottom:1px solid #333; cursor:pointer" onclick="iniciarJogo(${f.fixture.id})">
-                    ${f.teams.home.name} x ${f.teams.away.name} (${f.fixture.status.short})
+            document.getElementById('lista').innerHTML = data.response.map(f => `
+                <div style="padding:8px; border-bottom:1px solid #333; cursor:pointer" onclick="iniciar(${f.fixture.id})">
+                    ${f.teams.home.name} x ${f.teams.away.name}
                 </div>
             `).join('');
-            document.getElementById('jogosHoje').innerHTML = html;
         }
 
-        async function iniciarJogo(id) {
-            document.getElementById('cBox').classList.remove('active');
-            if(timerLoop) clearInterval(timerLoop);
-            cacheLineup = null; // Reset lineup cache for new game
-            
+        async function iniciar(id) {
+            document.querySelector('.control-panel').classList.remove('active');
+            if(loop) clearInterval(loop);
+            cacheLineup = null;
             await atualizar(id);
-            timerLoop = setInterval(() => atualizar(id), 30000);
+            loop = setInterval(() => atualizar(id), 30000);
         }
 
         async function atualizar(id) {
-            try {
-                // Requisição principal (Dados do jogo + Eventos)
-                const mainData = await api(`fixtures?id=${id}`);
-                const f = mainData.response[0];
+            const main = await api(`fixtures?id=${id}`);
+            const stats = await api(`fixtures/statistics?fixture=${id}`);
+            const f = main.response[0];
 
-                // Requisição de Estatísticas (ITEM 1)
-                const statsData = await api(`fixtures/statistics?fixture=${id}`);
-                
-                // Requisição de Escalação (Somente se não houver cache)
-                if(!cacheLineup) {
-                    const lineData = await api(`fixtures/lineups?fixture=${id}`);
-                    cacheLineup = lineData.response;
-                    renderLineups(cacheLineup);
-                }
+            // Atualiza Placar e Cronômetro
+            document.getElementById('teamA').innerText = f.teams.home.name;
+            document.getElementById('teamB').innerText = f.teams.away.name;
+            document.getElementById('logoA').src = f.teams.home.logo;
+            document.getElementById('logoB').src = f.teams.away.logo;
+            document.getElementById('scA').innerText = f.goals.home || 0;
+            document.getElementById('scB').innerText = f.goals.away || 0;
+            document.getElementById('timerVal').innerText = f.fixture.status.elapsed + "'";
 
-                // Atualiza Placar
-                document.getElementById('nameA').innerText = f.teams.home.name;
-                document.getElementById('nameB').innerText = f.teams.away.name;
-                document.getElementById('logoA').src = f.teams.home.logo;
-                document.getElementById('logoB').src = f.teams.away.logo;
-                document.getElementById('scA').innerText = f.goals.home || 0;
-                document.getElementById('scB').innerText = f.goals.away || 0;
-                document.getElementById('timerDisplay').innerText = f.fixture.status.elapsed + "'";
-
-                // Atualiza Stats (ITEM 1)
-                updateStats(statsData.response);
-
-                // Lógica de Status de Ataque (ITEM 2 - Simulação baseada em dados reais ou manual)
-                updateMatchStatus(f);
-
-                // Renderiza Campo
-                renderPitch(cacheLineup, f.events);
-
-            } catch(e) { console.error(e); }
-        }
-
-        function updateStats(stats) {
-            if(!stats || stats.length < 2) return;
-            
-            const getS = (teamIdx, type) => {
-                const item = stats[teamIdx].statistics.find(s => s.type === type);
-                return item ? parseInt(item.value) || 0 : 0;
-            };
-
-            const posA = getS(0, "Ball Possession");
-            const posB = getS(1, "Ball Possession");
-            const shotA = getS(0, "Total Shots");
-            const shotB = getS(1, "Total Shots");
-            const cornA = getS(0, "Corner Kicks");
-            const cornB = getS(1, "Corner Kicks");
-
-            // Atualiza Visores
-            document.getElementById('valPosA').innerText = posA + "%";
-            document.getElementById('valPosB').innerText = posB + "%";
-            document.getElementById('barPosA').style.width = posA + "%";
-            document.getElementById('barPosB').style.width = posB + "%";
-
-            const shotTotal = (shotA + shotB) || 1;
-            document.getElementById('valShotA').innerText = shotA;
-            document.getElementById('valShotB').innerText = shotB;
-            document.getElementById('barShotA').style.width = (shotA / shotTotal * 100) + "%";
-            document.getElementById('barShotB').style.width = (shotB / shotTotal * 100) + "%";
-
-            const cornTotal = (cornA + cornB) || 1;
-            document.getElementById('valCornA').innerText = cornA;
-            document.getElementById('valCornB').innerText = cornB;
-            document.getElementById('barCornA').style.width = (cornA / cornTotal * 100) + "%";
-            document.getElementById('barCornB').style.width = (cornB / cornTotal * 100) + "%";
-        }
-
-        function updateMatchStatus(f) {
-            const banner = document.getElementById('matchStatus');
-            const status = f.fixture.status.short;
-            
-            if(status === 'HT') {
-                banner.innerText = "INTERVALO";
-                banner.className = "match-status-banner status-var";
-            } else if(f.events && f.events.length > 0) {
-                const last = f.events[f.events.length - 1];
-                const diffMin = f.fixture.status.elapsed - last.time.elapsed;
-                
-                if(diffMin <= 1 && last.type === "Goal") {
-                    banner.innerText = "⚽ GOL CONFIRMADO";
-                    banner.className = "match-status-banner status-goal";
-                } else {
-                    banner.innerText = "BOLA EM JOGO";
-                    banner.className = "match-status-banner";
-                }
+            // Escalações (Chamada única)
+            if(!cacheLineup) {
+                const line = await api(`fixtures/lineups?fixture=${id}`);
+                cacheLineup = line.response;
+                renderList(0, 'listA', 'hA');
+                renderList(1, 'listB', 'hB');
             }
+
+            updateStatsDisplay(stats.response);
+            renderPitch(f.events || []);
+            autoStatus(f);
         }
 
-        function simularStatus(mode) {
-            const banner = document.getElementById('matchStatus');
-            if(mode === 'danger') {
-                banner.innerText = "⚠️ ATAQUE PERIGOSO";
-                banner.className = "match-status-banner status-danger";
-            } else {
-                banner.innerText = "BOLA EM JOGO";
-                banner.className = "match-status-banner";
-            }
+        function renderList(idx, containerId, headerId) {
+            const team = cacheLineup[idx];
+            document.getElementById(headerId).innerHTML = `<img src="${team.team.logo}" width="20"> ${team.team.name}`;
+            document.getElementById(containerId).innerHTML = team.startXI.map(p => `
+                <div class="player-row" onmouseenter="highlight(${p.player.id})" onmouseleave="unhighlight(${p.player.id})">
+                    <strong style="color:#0f8; width:25px">${p.player.number}</strong> ${p.player.name}
+                </div>
+            `).join('');
         }
 
-        function renderLineups(lineup) {
-            const draw = (idx, listId, headerId) => {
-                const team = lineup[idx];
-                document.getElementById(headerId).innerHTML = `<img src="${team.team.logo}" width="25"> ${team.team.name}`;
-                document.getElementById(listId).innerHTML = team.startXI.map(p => `
-                    <div class="p-row" onmouseenter="highlight(${p.player.id})" onmouseleave="unhighlight(${p.player.id})">
-                        <span class="p-num">${p.player.number}</span>
-                        <span class="p-name">${p.player.name}</span>
-                    </div>
-                `).join('');
-            };
-            draw(0, 'listA', 'hNameA');
-            draw(1, 'listB', 'hNameB');
-        }
-
-        function renderPitch(lineup, events) {
+        function renderPitch(events) {
             const pitch = document.getElementById('pitch');
-            pitch.innerHTML = ''; 
-            
-            const drawTeam = (teamData, isHome) => {
-                teamData.startXI.forEach(p => {
-                    const [row, col] = p.player.grid.split(':').map(Number);
-                    let top, left;
-                    if(isHome) {
-                        top = 95 - (row * 15);
-                        left = (col * 20);
-                    } else {
-                        top = (row * 15);
-                        left = 100 - (col * 20);
-                    }
-
-                    pitch.innerHTML += `
-                        <div class="player-dot ${isHome ? 'home' : 'away'}" 
-                             style="top:${top}%; left:${left}%" 
-                             data-id="${p.player.id}">
-                             ${p.player.number}
-                        </div>
-                    `;
+            pitch.innerHTML = '';
+            cacheLineup.forEach((team, idx) => {
+                const isHome = idx === 0;
+                team.startXI.forEach(p => {
+                    const [r, c] = p.player.grid.split(':').map(Number);
+                    const top = isHome ? 95 - (r * 15) : (r * 15);
+                    const left = isHome ? (c * 20) : 100 - (c * 20);
+                    pitch.innerHTML += `<div class="player-dot ${isHome?'home':'away'}" style="top:${top}%; left:${left}%" data-id="${p.player.id}">${p.player.number}</div>`;
                 });
-            };
-            drawTeam(lineup[0], true);
-            drawTeam(lineup[1], false);
+            });
         }
 
-        window.highlight = (id) => {
-            const dot = document.querySelector(`.player-dot[data-id="${id}"]`);
-            if(dot) dot.classList.add('highlight');
-        };
-        window.unhighlight = (id) => {
-            const dot = document.querySelector(`.player-dot[data-id="${id}"]`);
-            if(dot) dot.classList.remove('highlight');
-        };
+        function updateStatsDisplay(stats) {
+            if(!stats || stats.length < 2) return;
+            const getVal = (tIdx, type) => parseInt(stats[tIdx].statistics.find(s => s.type === type)?.value) || 0;
+            
+            const pA = getVal(0, "Ball Possession"), pB = getVal(1, "Ball Possession");
+            document.getElementById('vPosA').innerText = pA+"%"; document.getElementById('vPosB').innerText = pB+"%";
+            document.getElementById('bPosA').style.width = pA+"%"; document.getElementById('bPosB').style.width = pB+"%";
+
+            const sA = getVal(0, "Total Shots"), sB = getVal(1, "Total Shots");
+            const sT = (sA + sB) || 1;
+            document.getElementById('vShotA').innerText = sA; document.getElementById('vShotB').innerText = sB;
+            document.getElementById('bShotA').style.width = (sA/sT*100)+"%"; document.getElementById('bShotB').style.width = (sB/sT*100)+"%";
+        }
+
+        function autoStatus(f) {
+            const b = document.getElementById('matchStatus');
+            if(f.fixture.status.short === 'HT') { b.innerText = "INTERVALO"; b.className = "match-status-banner"; }
+            else { b.innerText = "BOLA EM JOGO"; b.className = "match-status-banner"; }
+        }
+
+        function simular(m) {
+            const b = document.getElementById('matchStatus');
+            if(m === 'danger') { b.innerText = "⚠️ ATAQUE PERIGOSO"; b.className = "match-status-banner status-danger"; }
+            else { b.innerText = "BOLA EM JOGO"; b.className = "match-status-banner"; }
+        }
+
+        window.highlight = (id) => document.querySelector(`.player-dot[data-id="${id}"]`)?.classList.add('highlight');
+        window.unhighlight = (id) => document.querySelector(`.player-dot[data-id="${id}"]`)?.classList.remove('highlight');
     </script>
 </body>
 </html>
