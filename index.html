@@ -2,11 +2,16 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Streamer Dashboard Ultra - Stats Edition</title>
+    <title>Streamer Dashboard Pro - Layout Otimizado</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { width: 1920px; height: 1080px; background: #070707; font-family: 'Inter', sans-serif; color: #fff; overflow: hidden; }
         
+        /* SCROLLBAR CUSTOMIZADA (ESTILO DARK) */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #0f8; border-radius: 10px; }
+
         /* BANNER STATUS */
         .match-status-banner {
             position: absolute; top: 0; left: 0; width: 100%; height: 30px;
@@ -27,58 +32,47 @@
         .team img { width: 40px; height: 40px; object-fit: contain; }
         .score { font-size: 45px; color: #0f8; min-width: 110px; text-align: center; font-family: 'Monaco', monospace; }
 
-        /* LISTAS ESQUERDA */
-        .lists-wrapper { position: absolute; top: 110px; left: 25px; width: 560px; display: flex; gap: 15px; }
-        .team-list { width: 270px; }
-        .team-header { background: #0f8; color: #000; padding: 8px; border-radius: 6px 6px 0 0; font-weight: 900; display: flex; gap: 8px; align-items: center; font-size: 11px; }
-        .players-container { background: rgba(15,15,15,0.9); border: 1px solid #333; padding: 5px; height: 850px; overflow-y: auto; border-radius: 0 0 6px 6px; }
-        .player-row { display: flex; align-items: center; gap: 8px; padding: 8px; margin: 3px 0; background: #1a1a1a; border-radius: 4px; font-size: 11px; cursor: pointer; border-left: 3px solid transparent; }
+        /* LISTAS ESQUERDA (DIMINUÍDAS COM SCROLL) */
+        .lists-wrapper { position: absolute; top: 110px; left: 25px; width: 440px; display: flex; gap: 10px; }
+        .team-list { width: 215px; }
+        .team-header { background: #0f8; color: #000; padding: 6px; border-radius: 6px 6px 0 0; font-weight: 900; display: flex; gap: 5px; align-items: center; font-size: 10px; overflow: hidden; white-space: nowrap; }
+        .players-container { background: rgba(15,15,15,0.9); border: 1px solid #333; padding: 5px; height: 600px; overflow-y: auto; border-radius: 0 0 6px 6px; }
+        .player-row { display: flex; align-items: center; gap: 6px; padding: 6px; margin: 2px 0; background: #1a1a1a; border-radius: 4px; font-size: 10px; cursor: pointer; border-left: 2px solid transparent; }
         .player-row:hover { border-left-color: #0f8; background: #252525; }
 
         /* CAMPO CENTRAL */
-        .center-area { position: absolute; top: 110px; left: 610px; width: 730px; display: flex; flex-direction: column; align-items: center; }
+        .center-area { position: absolute; top: 110px; left: 500px; width: 850px; display: flex; flex-direction: column; align-items: center; }
         .pitch-container { 
-            position: relative; width: 500px; height: 680px; 
+            position: relative; width: 520px; height: 720px; 
             background: #0a1a10; border: 2px solid #0f8; border-radius: 8px; 
             overflow: hidden; box-shadow: inset 0 0 40px #000; margin-top: 10px;
         }
-        .player-dot { position: absolute; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; transform: translate(-50%, -50%); border: 2px solid #000; z-index: 5; transition: 0.2s; }
+        .player-dot { position: absolute; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; transform: translate(-50%, -50%); border: 2px solid #000; z-index: 5; transition: 0.2s; }
         .player-dot.home { background: #0f8; color: #000; }
         .player-dot.away { background: #fff; color: #000; }
-        .player-dot.highlight { transform: translate(-50%, -50%) scale(1.7) !important; box-shadow: 0 0 20px #0f8; z-index: 100; }
+        .player-dot.highlight { transform: translate(-50%, -50%) scale(1.8) !important; box-shadow: 0 0 25px #0f8; z-index: 100; }
 
-        /* LADO DIREITO: ESTATÍSTICAS + CAMERA */
-        .right-sidebar { position: absolute; top: 110px; right: 30px; width: 520px; display: flex; flex-direction: column; gap: 15px; }
-        
-        .stats-pro { background: #151515; border: 1px solid #333; border-radius: 12px; padding: 15px; max-height: 550px; overflow-y: auto; }
-        .stat-box { margin-bottom: 12px; }
-        .stat-label { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: #aaa; margin-bottom: 4px; text-transform: uppercase; }
-        .stat-bar-outer { height: 8px; background: #222; border-radius: 4px; display: flex; overflow: hidden; border: 1px solid #333; }
+        /* DIREITA: STATS + CAMERA */
+        .right-sidebar { position: absolute; top: 110px; right: 30px; width: 500px; display: flex; flex-direction: column; gap: 15px; }
+        .stats-pro { background: #151515; border: 1px solid #333; border-radius: 12px; padding: 15px; }
+        .stat-box { margin-bottom: 10px; }
+        .stat-label { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; color: #aaa; margin-bottom: 3px; text-transform: uppercase; }
+        .stat-bar-outer { height: 7px; background: #222; border-radius: 4px; display: flex; overflow: hidden; border: 1px solid #333; }
         .bar-h { background: #0f8; height: 100%; transition: 1s ease; }
         .bar-a { background: #fff; height: 100%; transition: 1s ease; }
+        .camera-box { width: 500px; height: 281px; border: 2px solid #333; border-radius: 12px; background: #000; display: flex; align-items: center; justify-content: center; color: #444; font-weight: bold; text-transform: uppercase; font-size: 14px; }
 
-        .camera-box { 
-            width: 520px; height: 292px; border: 2px solid #333; border-radius: 12px; 
-            background: #000; display: flex; align-items: center; justify-content: center;
-            color: #444; font-weight: bold; text-transform: uppercase; font-size: 14px;
-        }
-
-        /* CONFIGURAÇÕES PEQUENO NO CANTO */
-        .settings-btn { position: fixed; top: 5px; right: 10px; background: none; border: none; color: #333; cursor: pointer; z-index: 1001; font-size: 14px; }
-        .settings-btn:hover { color: #0f8; }
-        
-        .config-panel { 
-            position: fixed; top: 35px; right: 10px; width: 350px; 
-            background: #1a1a1a; border: 1px solid #333; padding: 15px; 
-            border-radius: 8px; display: none; z-index: 1000; box-shadow: 0 10px 30px #000;
-        }
+        /* CONFIGURAÇÕES */
+        .settings-btn { position: fixed; top: 5px; right: 10px; background: none; border: none; color: #444; cursor: pointer; z-index: 1001; font-size: 14px; }
+        .config-panel { position: fixed; top: 35px; right: 10px; width: 350px; background: #1a1a1a; border: 1px solid #333; padding: 15px; border-radius: 8px; display: none; z-index: 1000; box-shadow: 0 10px 30px #000; }
         .config-panel.active { display: block; }
-        
-        .search-box input { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: #fff; border-radius: 4px; margin-bottom: 10px; }
-        .live-list { max-height: 250px; overflow-y: auto; border: 1px solid #222; border-radius: 4px; }
-        .live-item { padding: 10px; border-bottom: 1px solid #222; cursor: pointer; font-size: 12px; }
+        .config-panel input { width: 100%; padding: 8px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 10px; border-radius: 4px; }
+        .btn-group { display: flex; gap: 5px; margin-bottom: 10px; }
+        .btn-group button { flex: 1; padding: 8px; font-size: 10px; font-weight: bold; cursor: pointer; border: none; border-radius: 4px; background: #333; color: #fff; }
+        .btn-group button.active { background: #0f8; color: #000; }
+        .live-list { max-height: 250px; overflow-y: auto; border: 1px solid #222; }
+        .live-item { padding: 8px; border-bottom: 1px solid #222; cursor: pointer; font-size: 11px; }
         .live-item:hover { background: #222; }
-        .live-item span { color: #0f8; float: right; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -109,95 +103,65 @@
 
     <div class="right-sidebar">
         <div class="stats-pro">
-            <div class="stat-box">
-                <div class="stat-label"><span id="vPosA">50%</span> POSSE DE BOLA <span id="vPosB">50%</span></div>
-                <div class="stat-bar-outer"><div id="bPosA" class="bar-h" style="width: 50%"></div><div id="bPosB" class="bar-a" style="width: 50%"></div></div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label"><span id="vSOnA">0</span> CHUTES NO GOL <span id="vSOnB">0</span></div>
-                <div class="stat-bar-outer"><div id="bSOnA" class="bar-h" style="width: 50%"></div><div id="bSOnB" class="bar-a" style="width: 50%"></div></div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label"><span id="vShotA">0</span> CHUTES TOTAIS <span id="vShotB">0</span></div>
-                <div class="stat-bar-outer"><div id="bShotA" class="bar-h" style="width: 50%"></div><div id="bShotB" class="bar-a" style="width: 50%"></div></div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label"><span id="vCornA">0</span> ESCANTEIOS <span id="vCornB">0</span></div>
-                <div class="stat-bar-outer"><div id="bCornA" class="bar-h" style="width: 50%"></div><div id="bCornB" class="bar-a" style="width: 50%"></div></div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label"><span id="vFoulA">0</span> FALTAS <span id="vFoulB">0</span></div>
-                <div class="stat-bar-outer"><div id="bFoulA" class="bar-h" style="width: 50%"></div><div id="bFoulB" class="bar-a" style="width: 50%"></div></div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label"><span id="vCardA">0</span> CARTÕES AMARELOS <span id="vCardB">0</span></div>
-                <div class="stat-bar-outer"><div id="bCardA" class="bar-h" style="width: 50%"></div><div id="bCardB" class="bar-a" style="width: 50%"></div></div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label"><span id="vOffA">0</span> IMPEDIMENTOS <span id="vOffB">0</span></div>
-                <div class="stat-bar-outer"><div id="bOffA" class="bar-h" style="width: 50%"></div><div id="bOffB" class="bar-a" style="width: 50%"></div></div>
-            </div>
+            <div class="stat-box"><div class="stat-label"><span id="vPosA">50%</span> POSSE <span id="vPosB">50%</span></div><div class="stat-bar-outer"><div id="bPosA" class="bar-h" style="width: 50%"></div><div id="bPosB" class="bar-a" style="width: 50%"></div></div></div>
+            <div class="stat-box"><div class="stat-label"><span id="vSOnA">0</span> NO GOL <span id="vSOnB">0</span></div><div class="stat-bar-outer"><div id="bSOnA" class="bar-h" style="width: 50%"></div><div id="bSOnB" class="bar-a" style="width: 50%"></div></div></div>
+            <div class="stat-box"><div class="stat-label"><span id="vFoulA">0</span> FALTAS <span id="vFoulB">0</span></div><div class="stat-bar-outer"><div id="bFoulA" class="bar-h" style="width: 50%"></div><div id="bFoulB" class="bar-a" style="width: 50%"></div></div></div>
+            <div class="stat-box"><div class="stat-label"><span id="vCardA">0</span> AMARELOS <span id="vCardB">0</span></div><div class="stat-bar-outer"><div id="bCardA" class="bar-h" style="width: 50%"></div><div id="bCardB" class="bar-a" style="width: 50%"></div></div></div>
+            <div class="stat-box"><div class="stat-label"><span id="vOffA">0</span> IMPED. <span id="vOffB">0</span></div><div class="stat-bar-outer"><div id="bOffA" class="bar-h" style="width: 50%"></div><div id="bOffB" class="bar-a" style="width: 50%"></div></div></div>
         </div>
-
         <div class="camera-box">WEBCAM STREAMER</div>
     </div>
 
-    <button class="settings-btn" onclick="toggleConfig()">⚙️ CONFIGS</button>
+    <button class="settings-btn" onclick="toggleConfig()">⚙️</button>
     
     <div class="config-panel" id="configPanel">
-        <input type="password" id="apiKey" placeholder="Cole sua API Key">
-        <button onclick="salvarKey()" style="width:100%; padding:10px; background:#0f8; border:none; cursor:pointer; font-weight:bold; margin-bottom:10px;">SALVAR API KEY</button>
-        
-        <input type="text" id="gameSearch" placeholder="🔍 Buscar time ao vivo..." oninput="filtrarJogos()">
-        <div id="listaLive" class="live-list"></div>
-
-        <div style="margin-top:15px; display:flex; gap:5px;">
-            <button onclick="simular('danger')" style="flex:1; background:#500; color:#fff; border:none; padding:8px; cursor:pointer; font-size:10px;">ALERTA: ATAQUE</button>
-            <button onclick="simular('normal')" style="flex:1; background:#222; color:#fff; border:none; padding:8px; cursor:pointer; font-size:10px;">NORMAL</button>
+        <input type="password" id="apiKey" placeholder="Sua API Key">
+        <div class="btn-group">
+            <button id="btnLive" class="active" onclick="mudarModo('live')">AO VIVO</button>
+            <button id="btnToday" onclick="mudarModo('today')">JOGOS DE HOJE</button>
         </div>
+        <input type="text" id="gameSearch" placeholder="🔍 Filtrar time..." oninput="filtrarJogos()">
+        <div id="listaLive" class="live-list"></div>
     </div>
 
     <script>
         let KEY = localStorage.getItem('apiKey') || '';
         let loop = null;
         let cacheLineup = null;
-        let jogosAoVivo = [];
+        let jogosCache = [];
+        let modoAtual = 'live';
 
         document.getElementById('apiKey').value = KEY;
+
         function toggleConfig() { document.getElementById('configPanel').classList.toggle('active'); }
 
-        function salvarKey() {
-            KEY = document.getElementById('apiKey').value;
-            localStorage.setItem('apiKey', KEY);
-            carregarJogosAoVivo();
+        async function mudarModo(modo) {
+            modoAtual = modo;
+            document.getElementById('btnLive').className = modo === 'live' ? 'active' : '';
+            document.getElementById('btnToday').className = modo === 'today' ? 'active' : '';
+            await carregarLista();
         }
 
-        async function api(path) {
-            const r = await fetch(`https://v3.football.api-sports.io/${path}`, {
-                headers: { 'x-apisports-key': KEY }
-            });
-            return r.json();
-        }
-
-        async function carregarJogosAoVivo() {
-            const data = await api(`fixtures?live=all`);
-            jogosAoVivo = data.response || [];
+        async function carregarLista() {
+            if(!KEY) return;
+            const endpoint = modoAtual === 'live' ? 'fixtures?live=all' : `fixtures?date=${new Date().toISOString().split('T')[0]}`;
+            const r = await fetch(`https://v3.football.api-sports.io/${endpoint}`, { headers: { 'x-apisports-key': KEY } });
+            const data = await r.json();
+            jogosCache = data.response || [];
             filtrarJogos();
         }
 
         function filtrarJogos() {
             const termo = document.getElementById('gameSearch').value.toLowerCase();
-            const filtered = jogosAoVivo.filter(f => 
-                f.teams.home.name.toLowerCase().includes(termo) || 
-                f.teams.away.name.toLowerCase().includes(termo)
-            );
+            const filtered = jogosCache.filter(f => f.teams.home.name.toLowerCase().includes(termo) || f.teams.away.name.toLowerCase().includes(termo));
             document.getElementById('listaLive').innerHTML = filtered.map(f => `
                 <div class="live-item" onclick="selecionarJogo(${f.fixture.id})">
-                    ${f.teams.home.name} x ${f.teams.away.name} <span>${f.fixture.status.elapsed}'</span>
+                    ${f.teams.home.name} x ${f.teams.away.name} <span>${f.fixture.status.elapsed || 'vende'}'</span>
                 </div>
-            `).join('') || '<div style="padding:10px; color:#666; font-size:11px">Nenhum jogo encontrado</div>';
+            `).join('') || '<div style="padding:10px">Nenhum jogo encontrado</div>';
         }
 
+        // ... (Funções selecionarJogo, atualizar, renderLists, renderPitch e updateStats permanecem as mesmas do código anterior) ...
         async function selecionarJogo(id) {
             toggleConfig();
             if(loop) clearInterval(loop);
@@ -207,37 +171,37 @@
         }
 
         async function atualizar(id) {
-            try {
-                const [main, stats] = await Promise.all([
-                    api(`fixtures?id=${id}`),
-                    api(`fixtures/statistics?fixture=${id}`)
-                ]);
-                const f = main.response[0];
-                document.getElementById('teamA').innerText = f.teams.home.name;
-                document.getElementById('teamB').innerText = f.teams.away.name;
-                document.getElementById('logoA').src = f.teams.home.logo;
-                document.getElementById('logoB').src = f.teams.away.logo;
-                document.getElementById('scA').innerText = f.goals.home ?? 0;
-                document.getElementById('scB').innerText = f.goals.away ?? 0;
-                document.getElementById('timerVal').innerText = f.fixture.status.elapsed + "'";
+            const r = await fetch(`https://v3.football.api-sports.io/fixtures?id=${id}`, { headers: { 'x-apisports-key': KEY } });
+            const s = await fetch(`https://v3.football.api-sports.io/fixtures/statistics?fixture=${id}`, { headers: { 'x-apisports-key': KEY } });
+            const dataMain = await r.json();
+            const dataStats = await s.json();
+            const f = dataMain.response[0];
+            
+            document.getElementById('teamA').innerText = f.teams.home.name;
+            document.getElementById('teamB').innerText = f.teams.away.name;
+            document.getElementById('logoA').src = f.teams.home.logo;
+            document.getElementById('logoB').src = f.teams.away.logo;
+            document.getElementById('scA').innerText = f.goals.home ?? 0;
+            document.getElementById('scB').innerText = f.goals.away ?? 0;
+            document.getElementById('timerVal').innerText = (f.fixture.status.elapsed || 0) + "'";
 
-                if(!cacheLineup) {
-                    const line = await api(`fixtures/lineups?fixture=${id}`);
-                    cacheLineup = line.response;
-                    renderLists();
-                }
-                updateStats(stats.response);
-                renderPitch();
-            } catch(e) { console.error(e); }
+            if(!cacheLineup) {
+                const l = await fetch(`https://v3.football.api-sports.io/fixtures/lineups?fixture=${id}`, { headers: { 'x-apisports-key': KEY } });
+                const dataLine = await l.json();
+                cacheLineup = dataLine.response;
+                renderLists();
+            }
+            updateStats(dataStats.response);
+            renderPitch();
         }
 
         function renderLists() {
             const draw = (idx, listId, headerId) => {
                 const team = cacheLineup[idx];
-                document.getElementById(headerId).innerText = team.team.name.toUpperCase();
+                document.getElementById(headerId).innerText = team.team.name;
                 document.getElementById(listId).innerHTML = team.startXI.map(p => `
                     <div class="player-row" onmouseenter="highlight(${p.player.id})" onmouseleave="unhighlight(${p.player.id})">
-                        <b style="color:#0f8; width:18px">${p.player.number}</b> ${p.player.name}
+                        <b style="color:#0f8; width:15px">${p.player.number}</b> ${p.player.name}
                     </div>
                 `).join('');
             };
@@ -260,34 +224,22 @@
 
         function updateStats(stats) {
             if(!stats || stats.length < 2) return;
-            const updateBar = (idVal, idBar, type) => {
+            const updateBar = (id, type) => {
                 const valA = parseInt(stats[0].statistics.find(s => s.type === type)?.value) || 0;
                 const valB = parseInt(stats[1].statistics.find(s => s.type === type)?.value) || 0;
-                document.getElementById('v'+idVal+'A').innerText = (type === "Ball Possession") ? valA+"%" : valA;
-                document.getElementById('v'+idVal+'B').innerText = (type === "Ball Possession") ? valB+"%" : valB;
+                document.getElementById('v'+id+'A').innerText = type.includes('Possession') ? valA+'%' : valA;
+                document.getElementById('v'+id+'B').innerText = type.includes('Possession') ? valB+'%' : valB;
                 const total = (valA + valB) || 1;
-                document.getElementById('b'+idBar+'A').style.width = (valA / total * 100) + "%";
-                document.getElementById('b'+idBar+'B').style.width = (valB / total * 100) + "%";
+                document.getElementById('b'+id+'A').style.width = (valA/total*100)+'%';
+                document.getElementById('b'+id+'B').style.width = (valB/total*100)+'%';
             };
-
-            updateBar('Pos', 'Pos', 'Ball Possession');
-            updateBar('SOn', 'SOn', 'Shots on Goal');
-            updateBar('Shot', 'Shot', 'Total Shots');
-            updateBar('Corn', 'Corn', 'Corner Kicks');
-            updateBar('Foul', 'Foul', 'Fouls');
-            updateBar('Card', 'Card', 'Yellow Cards');
-            updateBar('Off', 'Off', 'Offsides');
-        }
-
-        function simular(m) {
-            const b = document.getElementById('matchStatus');
-            if(m === 'danger') { b.innerText = "⚠️ ATAQUE PERIGOSO"; b.className = "match-status-banner status-danger"; }
-            else { b.innerText = "BOLA EM JOGO"; b.className = "match-status-banner"; }
+            updateBar('Pos', 'Ball Possession'); updateBar('SOn', 'Shots on Goal'); updateBar('Foul', 'Fouls'); updateBar('Card', 'Yellow Cards'); updateBar('Off', 'Offsides');
         }
 
         window.highlight = (id) => document.querySelector(`.player-dot[data-id="${id}"]`)?.classList.add('highlight');
         window.unhighlight = (id) => document.querySelector(`.player-dot[data-id="${id}"]`)?.classList.remove('highlight');
-        if(KEY) carregarJogosAoVivo();
+        
+        if(KEY) carregarLista();
     </script>
 </body>
 </html>
